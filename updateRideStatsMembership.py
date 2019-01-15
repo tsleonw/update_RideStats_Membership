@@ -106,6 +106,7 @@ class Member:
     memberID = None
     firstName = None
     lastName = None
+    birthDate = None
     alias = None
     email = None
     mobilePhone = None
@@ -121,6 +122,8 @@ class Member:
     gender = None
     isValid = True
     memberError = None
+    emergencyContact = None
+    emergencyContactPhone = None
 
     def __init__(self, aDict):
         """
@@ -172,6 +175,10 @@ class Member:
                     self.state = field['Value']
                 elif field['FieldName'] == 'Postal Code':
                     self.zipCode = field['Value']
+                elif field['FieldName'] == 'Emergency Contact':
+                    self.emergencyContact = field['Value']
+                elif field['FieldName'] == 'Emergency Contact Phone':
+                    self.emergencyContactPhone = field['Value']
                 elif field['FieldName'] == "Group participation":
                     if field["Value"]:
                         for group in field["Value"]:
@@ -233,6 +240,8 @@ class Member:
         aDict['phone2'] = self.telephone
         aDict["rideLeader"] = self.isRideLeader
         aDict['state'] = self.state
+        aDict['EmergencyContactName'] = self.emergencyContact
+        aDict['EmergencyContactPhone'] = self.emergencyContactPhone
         if self.zipCode:
             aDict['zipCode'] = self.zipCode
         else:
