@@ -27,13 +27,12 @@ class RideStatsAPI:
 
     def postToRideStats(self, payload):
         """
-        post the json payload to rideStats
+        post the payload to rideStats
         """
-        if self._rideStatsURL.upper() == "LOCALHOST":
-            self._logger.info("rideStatsURL = 'localhost'; payload == \n %s",
-                              (payload))
-            return "RideStats URL was localHost.  see log for details"
         headers = {'authorization':self._rideStatsKey}
+        if self._logger.isEnabledFor(logging.DEBUG):
+            self._logger.debug('RideStats URL = %s', self._rideStatsURL)
+            self._logger.debug('RideStats payload = %s', payload)
         response = requests.post(headers=headers,
                                  url=self._rideStatsURL,
                                  json=payload)
@@ -44,6 +43,7 @@ class RideStatsAPI:
                 response.status_code == 202):
             return response.text
         else:
+            self._logger.info('payload = %s', payload)
             self._logger.info('url = %s', response.url)
             msg = "Call to RideStats API returned status code " + response.status_code
             raise Exception(msg)

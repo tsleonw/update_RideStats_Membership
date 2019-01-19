@@ -13,10 +13,10 @@
   "filter": "member eq true",
   "top": 0,
   "async": false,
-  "select": "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due' 'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone' 'City' 'State' 'Postal code' 'Member emails and newsletters'  'Emergency Contact' 'Emergency Contact Phone'  ",
+  "select": "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due' 'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone' 'City' 'State' 'Postal code' 'Member emails and newsletters'  'Emergency Contact' 'Emergency Contact Phone'  'Birthday'",
   "RideStatsURL": "https://hbc.qa.ridestats.bike/admin/webservices/membershipUpdateService",
-  "RideStatsURL_Local": "localHost",
   "RideStatsKey": "7c4155f5-5f58-4cd9-a18c-04804eeaa6cd",
-  "RideStatsClubID": "HBC"
+  "RideStatsClubID": "HBC",
+  "PostToRideStats": true
 }
 

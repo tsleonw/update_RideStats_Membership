@@ -5,38 +5,40 @@ the Wild Apricot API.  Wild Apricot returns a JSON list of members.  The module
 then validates each member.  A list of valid members is sent to RideStats,
 and an email is produced which reports the status of the run and lists any
 errorList.
+
+TODO:
+        1) [DONE]get git figured out -- eliminate the unused files in the repository,
+           make sure all neeeded files are there.
+        2) [DONE]make parms configurable by environment & make environment a paramter
+           that is passed in at startup.
+        3) complete the error handling for creating a member.  Loook at alternaives
+           for error checking, especially key errors.
+        4) [Done]modify the email so that it reports which environment it comes from
+           and the URL used for ridestats.
+        5) construct some mock objects for testing, especially the calls to Wild
+           Apricot and RideStats.
+        6) [DONE]Rename the parm file.
+        7) [DONE]store the production code on the wild apricot website.
+        8) [Done]implment logrotate
 """
 
 
 import logging
 import json
 import smtplib
+import sys
 from datetime import datetime
 
+import URSMConfig
 from rideStatsClient import RideStatsAPI
 from waAPIClient import WaAPIClient
 
-class RSMUConfig:
+class Config:
     """
     Class acts as a value holder for global parms.
     Maybe this is not the most pythonic way to accomplish this,
     but I like that it encapsulates the transfer of the data
     from a parms file to the variables.
-
-    TODO:
-        1) get git figured out -- eliminate the unused files in the repository,
-           make sure all neeeded files are there.
-        2) make parms configurable by environment & make environment a paramter
-           that is passed in at startup.
-        3) complete the error handling for creating a member.  Loook at alternaives
-           for error checking, especially key errors.
-        4) modify the email so that it reports which environment it comes from
-           and the URL used for ridestats.
-        5) construct some mock objects for testing, especially the calls to Wild
-           Apricot and RideStats.
-        6) Rename the parm file.
-        7) store the production code on the wild apricot website.
-        8) implment logrotate
     """
 
     _parmFile = "URSMParms.json"
@@ -46,7 +48,7 @@ class RSMUConfig:
 
 
     def __init__(self):
-
+        """
         try:
             with open(self._parmFile) as readFile:
                 self.parms = json.load(readFile)
@@ -54,19 +56,33 @@ class RSMUConfig:
         except Exception as ex:
             print("could not load parmFile:", self._parmFile)
             print('Exception: ', ex)
-            exit(-1)
+            exit(1)
+        """
+        self.loadParms()
+        self.initLogger()
 
+    def loadParms(self):
+        if len(sys.argv) < 2 or (sys.argv[1] != 'PROD' and sys.argv[1] != 'QA'):
+            print('No environment specified. \n')
+            print('usage:  updateRideStatsMembership.py PROD|DEV')
+            sys.exit(1)
+        else:
+            self.environment = sys.argv[1]
+            self.parms = URSMConfig.CONFIG[self.environment]
+
+    def initLogger(self):
         try:
             logFormat = "%(asctime)s - %(levelname)s - %(module)s:%(lineno)d -- %(message)s"
             self.logLevel = getattr(logging, self.parms['logLevel'].upper())
             logging.basicConfig(filename=self.parms['logFile'],
                                 level=self.logLevel,
                                 format=logFormat)
-            self.logger = logging.getLogger('WARequestLogger')
+            self.logger = logging.getLogger(__name__)
         except Exception as ex:
             print("could not initialize logging:  ", ex)
             exit(-1)
         self.logger.info(msg='loaded parms from '+self._parmFile)
+
 
 class MemberError:
     """
@@ -147,7 +163,9 @@ class Member:
                 self.profileLastUpdated = datetime.fromisoformat(
                     (aDict['ProfileLastUpdated'])[:19]).date()
             except KeyError as ex:
-                msg = "error populating profileLastUpdated " +  ex.__repr__()
+                msg = self.firstName +  ' ' + self.lastName + \
+                      ' does not have a valid "Profile Last Updated" field in Wild Apricot'
+#                msg = "error populating profileLastUpdated " +  ex.__repr__()
                 self.postError(msg, aDict, ex)
                 self.profileLastUpdated = datetime.now().date()
 
@@ -179,6 +197,8 @@ class Member:
                     self.emergencyContact = field['Value']
                 elif field['FieldName'] == 'Emergency Contact Phone':
                     self.emergencyContactPhone = field['Value']
+                elif field['FieldName'] == 'Birthday':
+                    self.birthDate = field['Value']
                 elif field['FieldName'] == "Group participation":
                     if field["Value"]:
                         for group in field["Value"]:
@@ -240,12 +260,16 @@ class Member:
         aDict['phone2'] = self.telephone
         aDict["rideLeader"] = self.isRideLeader
         aDict['state'] = self.state
-        aDict['EmergencyContactName'] = self.emergencyContact
-        aDict['EmergencyContactPhone'] = self.emergencyContactPhone
+        aDict['emergencyContactName'] = self.emergencyContact
+        aDict['emergencyContactPhone'] = self.emergencyContactPhone
+        if self.birthDate:
+            aDict['birthDate'] = self.birthDate
+        else:
+            aDict['birthDate'] = ''
         if self.zipCode:
             aDict['zipCode'] = self.zipCode
         else:
-            aDict['zipCode'] = ' '
+            aDict['zipCode'] = ''
         if self.profileLastUpdated:
             aDict['userLastModified'] = self.profileLastUpdated.isoformat()
         else:
@@ -262,7 +286,7 @@ class Member:
         if self.memberError is None:
             return aString
         else:
-            aString += "/tMember Record has errorList"
+            aString += "/tMember Record has errors"
             for msg in self.memberError.messages:
                 aString += "\t\t" + msg
             return aString
@@ -297,8 +321,9 @@ def emailResults():
     msg = "RideStatsMemberUpdate started at " + startTime.isoformat() + "\n"
     msg += "RideStatsMemberUpdate completed at " + endTime.isoformat() + "\n"
     msg += "duration was " + str(endTime - startTime) + "\n"
+    msg += 'The RideStats URL was ' + CONFIG.parms['RideStatsURL'] + '\n'
     msg += "There were " + str(numMembers) + " members processed.\n"
-    msg += "There were " + str(numerrorList) + " errorList found.\n"
+    msg += "There were " + str(numerrorList) + " members with errors\n"
     if errorList:
         msg = msg + "The following records had problems:\n"
         for memberError in errorList:
@@ -327,7 +352,7 @@ def emailResults():
 
 try:
     startTime = datetime.utcnow()
-    CONFIG = RSMUConfig()
+    CONFIG = Config()
     WA_API = WaAPIClient(CONFIG.parms['clientID'],
                          CONFIG.parms['clientSecret'],
                          CONFIG.parms['apiKey'],
@@ -343,19 +368,24 @@ try:
         if member.isValid:
             memberList.append(member.toDict())
     payload["memberships"] = memberList
-    RIDESTATS_API = RideStatsAPI(CONFIG.parms['RideStatsURL'],
-                                 CONFIG.parms['RideStatsKey'],
-                                 logLevel=CONFIG.logLevel)
-    rideStatsResponse = RIDESTATS_API.postToRideStats(payload)
-
+    if CONFIG.parms['PostToRideStats']:
+        RIDESTATS_API = RideStatsAPI(CONFIG.parms['RideStatsURL'],
+                                     CONFIG.parms['RideStatsKey'],
+                                     logLevel=CONFIG.logLevel)
+        rideStatsResponse = RIDESTATS_API.postToRideStats(payload)
+    else:
+        with open('rideStatsPayload.json', 'w') as outfile:
+            json.dump(payload, outfile)
+        CONFIG.logger.info("rideStatsURL = 'localhost'; payload == \n %s",
+                           (payload))
+        rideStatsResponse = "RideStats URL was localHost.  see log for details"
     if CONFIG.logger.isEnabledFor(logging.DEBUG):
         CONFIG.logger.debug("valid members = %s", memberList)
         CONFIG.logger.debug("errorList = %s", str(errorList))
     if CONFIG.logger.isEnabledFor(logging.INFO):
-        CONFIG.logger.info(str(len(memberList))
-                                + " members were successfully validated")
+        CONFIG.logger.info('%s members were successfully validated', str(len(memberList)))
         CONFIG.logger.info("response from RideStats was %s", rideStatsResponse)
-        CONFIG.logger.info(msg=(str(len(errorList)) + " non-fatal errors were found"))
+        CONFIG.logger.info('%s non-fatal errors were found', str(len(errorList)))
     emailResults()
 
 except Exception as ex:
