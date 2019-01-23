@@ -9,7 +9,7 @@ used instead of a configuration file for the update rideStats program.
 """
 CONFIG = {
     'PROD' : {'logLevel':'INFO',
-              'logFile':'ursm.log',
+              'logFile':'logs/ursm.log',
               'smtpServer':'smtp.gmail.com',
               'smtpPort':587,
               'smtpFromAddress':'hbcridestats@gmail.com',

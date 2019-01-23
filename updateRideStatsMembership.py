@@ -24,6 +24,7 @@ TODO:
 
 
 import logging
+from logging.handlers import TimedRotatingFileHandler
 import json
 import smtplib
 import sys
@@ -62,25 +63,35 @@ class Config:
         self.initLogger()
 
     def loadParms(self):
+        """
+        load the appropriate parms depending upon the environment that was
+        passed in
+        """
         if len(sys.argv) < 2 or (sys.argv[1] != 'PROD' and sys.argv[1] != 'QA'):
             print('No environment specified. \n')
-            print('usage:  updateRideStatsMembership.py PROD|DEV')
+            print('usage:  updateRideStatsMembership.py PROD|QA')
             sys.exit(1)
         else:
             self.environment = sys.argv[1]
             self.parms = URSMConfig.CONFIG[self.environment]
 
     def initLogger(self):
+        """
+        initialize the logging using a timed rotating file handler
+        """
         try:
-            logFormat = "%(asctime)s - %(levelname)s - %(module)s:%(lineno)d -- %(message)s"
+            logFormat = logging.Formatter('%(asctime)s | %(levelname)s |%(module)s:%(lineno)d | %(message)s')
             self.logLevel = getattr(logging, self.parms['logLevel'].upper())
-            logging.basicConfig(filename=self.parms['logFile'],
-                                level=self.logLevel,
-                                format=logFormat)
+            handler = TimedRotatingFileHandler(self.parms['logFile'],
+                                               when='midnight',
+                                               backupCount=28)
+            handler.setFormatter(logFormat)
             self.logger = logging.getLogger(__name__)
+            self.logger.setLevel(self.logLevel)
+            self.logger.addHandler(handler)
         except Exception as ex:
             print("could not initialize logging:  ", ex)
-            exit(-1)
+            exit(1)
         self.logger.info(msg='loaded parms from '+self._parmFile)
 
 
@@ -158,7 +169,6 @@ class Member:
                 self.postError(msg, aDict, ex)
             self.email = aDict['Email']
             self.membershipType = aDict['MembershipLevel']['Name']
-
             try:
                 self.profileLastUpdated = datetime.fromisoformat(
                     (aDict['ProfileLastUpdated'])[:19]).date()
@@ -168,7 +178,7 @@ class Member:
 #                msg = "error populating profileLastUpdated " +  ex.__repr__()
                 self.postError(msg, aDict, ex)
                 self.profileLastUpdated = datetime.now().date()
-
+            """Extract the values from the relevent WA Fields"""
             for field in aDict['FieldValues']:
                 if field['FieldName'] == "Member since":
                     self.memberSince = datetime.fromisoformat((field['Value'])[:19]).date()
@@ -180,9 +190,9 @@ class Member:
                 elif field['FieldName'] == "Renewal due":
                     self.renewalDue = datetime.fromisoformat(field['Value']).date()
                 elif field['FieldName'] == "Mobile Phone":
-                    self.mobilePhone = field['Value']
+                    self.mobilePhone = self.getPhoneNumber(field['Value'])
                 elif field['FieldName'] == "Telephone":
-                    self.telephone = field['Value']
+                    self.telephone = self.getPhoneNumber(field['Value'])
                 elif field['FieldName'] == 'User ID':
                     self.memberID = field['Value']
                 elif field['FieldName'] == 'Alias':
@@ -196,7 +206,7 @@ class Member:
                 elif field['FieldName'] == 'Emergency Contact':
                     self.emergencyContact = field['Value']
                 elif field['FieldName'] == 'Emergency Contact Phone':
-                    self.emergencyContactPhone = field['Value']
+                    self.emergencyContactPhone = self.getPhoneNumber(field['Value'])
                 elif field['FieldName'] == 'Birthday':
                     self.birthDate = field['Value']
                 elif field['FieldName'] == "Group participation":
@@ -220,6 +230,17 @@ class Member:
         else:
             self.memberError.addErrorRecord(msg, exception)
         CONFIG.logger.exception(msg)
+
+    def getPhoneNumber(self, aString):
+        """
+        given a string, return the first 10 digits ignoring all non-numeric
+        characters
+        """
+        digits = list(filter(lambda x: x.isdigit(), aString))
+        phoneNumber = ''.join(digits)
+        if len(phoneNumber) > 9:
+            phoneNumber = phoneNumber[:10]
+        return phoneNumber
 
     def validate(self):
         """make sure that all required attributes of a member are present
@@ -381,7 +402,7 @@ try:
         rideStatsResponse = "RideStats URL was localHost.  see log for details"
     if CONFIG.logger.isEnabledFor(logging.DEBUG):
         CONFIG.logger.debug("valid members = %s", memberList)
-        CONFIG.logger.debug("errorList = %s", str(errorList))
+        CONFIG.logger.debug("errorList = %s", errorList)
     if CONFIG.logger.isEnabledFor(logging.INFO):
         CONFIG.logger.info('%s members were successfully validated', str(len(memberList)))
         CONFIG.logger.info("response from RideStats was %s", rideStatsResponse)
