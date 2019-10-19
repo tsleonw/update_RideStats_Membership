@@ -11,6 +11,7 @@ import base64
 import logging
 import requests
 
+
 class WaAPIClient:
     """
     encapsulate the interaction with Wild Apricot
@@ -35,7 +36,7 @@ class WaAPIClient:
         self._APIKey = APIKey
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logLevel)
-        #set the log level for the requests module too
+        # set the log level for the requests module too
         logging.getLogger('requests').setLevel(logLevel)
         logging.getLogger('urllib3').setLevel(logLevel)
 
@@ -47,17 +48,17 @@ class WaAPIClient:
         data = {
             "grant_type": "client_credentials",
             "scope": scope
-            }
+        }
         encodedKey = base64.standard_b64encode(('APIKEY:'
                                                 + self._APIKey).encode()).decode()
         authString = 'Basic ' + encodedKey
-        #print(authString)
-        headers = {'ContentType':'application/x-www-form-urlencoded',
-                   'Authorization':authString}
+        # print(authString)
+        headers = {'ContentType': 'application/x-www-form-urlencoded',
+                   'Authorization': authString}
         authResponse = requests.post(url=self.auth_endpoint,
                                      headers=headers, data=data)
         self._token = authResponse.json()["access_token"]
-        #print('token = ' + self._token)
+        # print('token = ' + self._token)
 
     def getContacts(self, params, accountNumber):
         """
@@ -70,6 +71,7 @@ class WaAPIClient:
                    "Authorization": "Bearer " + self._token}
         url = self.api_endpoint + "/" + self._version + "/accounts/" + accountNumber + "/Contacts/"
         response = requests.get(url, params=params, headers=headers)
+        self.logger.info("response from Wild Apricot API was " + str(response.status_code))
         if self.logger.isEnabledFor(logging.DEBUG):
             self.logger.debug(response.text)
         if response.status_code == 200:
@@ -77,4 +79,3 @@ class WaAPIClient:
         print('url = ', response.url)
         raise Exception("Call to WA API returned status code",
                         response.status_code)
-        

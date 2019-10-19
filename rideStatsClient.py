@@ -8,6 +8,7 @@ Created on Sat Jan  5 11:37:44 2019
 import logging
 import requests
 
+
 class RideStatsAPI:
     """
     encapsulate the interaction with RideStats
@@ -21,7 +22,7 @@ class RideStatsAPI:
         self._rideStatsKey = rideStatsKey
         self._logger = logging.getLogger(__name__)
         self._logger.setLevel(logLevel)
-        #set the log level for the requests module too
+        # set the log level for the requests module too
         logging.getLogger('requests').setLevel(logLevel)
         logging.getLogger('urllib3').setLevel(logLevel)
 
@@ -29,7 +30,7 @@ class RideStatsAPI:
         """
         post the payload to rideStats
         """
-        headers = {'authorization':self._rideStatsKey}
+        headers = {'authorization': self._rideStatsKey}
         if self._logger.isEnabledFor(logging.DEBUG):
             self._logger.debug('RideStats URL = %s', self._rideStatsURL)
             self._logger.debug('RideStats payload = %s', payload)
@@ -45,5 +46,6 @@ class RideStatsAPI:
         else:
             self._logger.info('payload = %s', payload)
             self._logger.info('url = %s', response.url)
-            msg = "Call to RideStats API returned status code " + response.status_code
+            self._logger.critical('Call to RideStats API return status code %d', response.status_code)
+            msg = "Call to RideStats API returned status code " + str(response.status_code)
             raise Exception(msg)

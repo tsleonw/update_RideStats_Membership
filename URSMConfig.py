@@ -8,7 +8,7 @@ Created on Sun Jan  6 18:53:51 2019
 used instead of a configuration file for the update rideStats program.
 """
 CONFIG = {
-    'PROD' : {'logLevel':'INFO',
+    'PROD': {'logLevel':'INFO',
               'logFile':'logs/ursm.log',
               'smtpServer':'smtp.gmail.com',
               'smtpPort':587,
@@ -32,7 +32,7 @@ CONFIG = {
               'PostToRideStats':True
              },
     'QA' : {'logLevel':'DEBUG',
-            'logFile':'logs/ursm.log',
+            'logFile':'logs/ursm.qa.log',
             'smtpServer':'smtp.gmail.com',
             'smtpPort':587,
             'smtpFromAddress':'hbc.qa.ridestats@gmail.com',
@@ -48,10 +48,10 @@ CONFIG = {
             'select':"'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due'\
             'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
             'City' 'State' 'Postal code' 'Member emails and newsletters' \
-            'Emergency Contact' 'Emergency Contact Phone'  'Birthday' ",
+            'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Creation Date'  ",
             'RideStatsURL':'https://hbc.qa.ridestats.bike/admin/webservices/membershipUpdateService',
             'RideStatsClubID':'HBC',
-            'RideStatsKey':'7c4155f5-5f58-4cd9-a18c-04804eeaa6cd',
+            'RideStatsKey':'2ec21428-9399-4f26-bdcd-19111f9c312d',
             'PostToRideStats':False
            }
 }
