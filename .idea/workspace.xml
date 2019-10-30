@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a0b63f7b-4828-4f72-bda2-c787ef576395" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/URSMConfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/URSMConfig.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rideStatsClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/rideStatsClient.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateRideStats.sh" beforeDir="false" afterPath="$PROJECT_DIR$/updateRideStats.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateRideStatsMembership.py" beforeDir="false" afterPath="$PROJECT_DIR$/updateRideStatsMembership.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/waAPIClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/waAPIClient.py" afterDir="false" />
-    </list>
+    <list default="true" id="a0b63f7b-4828-4f72-bda2-c787ef576395" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +10,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/URSMConfig.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="448">
@@ -26,11 +19,9 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/logs/ursm.log">
-          <provider selected="true" editor-type-id="LogFileEditorProvider">
-            <state relative-caret-position="-399" />
-          </provider>
+          <provider selected="true" editor-type-id="LogFileEditorProvider" />
         </entry>
       </file>
     </leaf>
@@ -72,7 +63,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="769" />
     <option name="y" value="149" />
     <option name="width" value="1312" />
@@ -84,6 +75,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -109,10 +101,10 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -186,11 +178,12 @@
       <workItem from="1563634903577" duration="261000" />
       <workItem from="1566788096870" duration="1217000" />
       <workItem from="1570501815677" duration="2048000" />
+      <workItem from="1570823880127" duration="601000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19343000" />
+    <option name="totallyTimeSpent" value="19944000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -204,7 +197,7 @@
   <component name="ToolWindowManager">
     <frame x="769" y="149" width="1312" height="902" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3062992" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.31102362" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -219,7 +212,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info anchor="bottom" id="Python Console" order="12" visible="true" weight="0.32962963" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="12" visible="true" weight="0.32962963" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" weight="0.32962963" />
       <window_info anchor="bottom" id="Inspection Results" order="14" visible="true" weight="0.32962963" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -290,20 +283,18 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/logs/ursm.log">
+      <provider selected="true" editor-type-id="LogFileEditorProvider" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="6" column="14427" selection-start-line="6" selection-start-column="14427" selection-end-line="6" selection-end-column="14427" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/URSMConfig.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="448">
           <caret line="53" column="64" selection-start-line="53" selection-start-column="64" selection-end-line="53" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/logs/ursm.log">
-      <provider selected="true" editor-type-id="LogFileEditorProvider">
-        <state relative-caret-position="-399" />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="6" column="14427" selection-start-line="6" selection-start-column="14427" selection-end-line="6" selection-end-column="14427" />
         </state>
       </provider>
     </entry>
