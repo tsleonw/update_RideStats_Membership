@@ -7,12 +7,28 @@ current date.  If no file is found, or if the creation date is not the same as t
 date, the email is sent to the administrator alerting them that the job did not run and a
 log file was not produced.  
 """
-from os import path
+
+
+
+import smtplib
+import sys
 from datetime import date, datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from os import path
+
+import URSMConfig
 
 logDirectory = '/Users/tslcw/UpdateRideStats/logs/'
 
-lastLogTimeStamp = path.getmtime(logDirectory + 'ursm.log')
+errorMessages = []
+
+
+try:
+    lastLogTimeStamp = path.getmtime(logDirectory + 'ursm.log')
+except FileNotFoundError as ex:
+    errorMessages.append("caughtFileNotFoundError". ex)
+    sendEMail()
 lastLogDate = date.fromtimestamp(lastLogTimeStamp)
 today = date.today()
 

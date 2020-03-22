@@ -71,7 +71,7 @@ class Config:
             self.logger.addHandler(handler)
         except Exception as ex:
             print("could not initialize logging:  ", ex)
-            exit(1)
+            sys.exit(1)
         self.logger.info(msg='loaded parms for the ' + self.environment + ' environment')
 
 
@@ -109,6 +109,7 @@ class MemberError:
                 self.exceptions = [exception]
 
 
+# noinspection PyDictCreation
 class Member:
     """
     Member represents a member of the club in Wild Apricot
@@ -164,7 +165,7 @@ class Member:
                       ' does not have a valid "Profile Last Updated" field in Wild Apricot'
                 msg += '\n\t\t Using current date as "Profile Last Updated" date.'
                 self.postError(msg, aDict, ex)
-                self.profileLastUpdated = datetime.now().date()
+            # self.profileLastUpdated = datetime.now().date()
             #           Extract the values from the relevent WA Fields
             for field in aDict['FieldValues']:
                 if field['FieldName'] == "Member since":
@@ -273,6 +274,7 @@ class Member:
                                     + str(self))
             self.isValid = False
 
+    @property
     def toDict(self):
         """
         render a json representation of a member
@@ -310,6 +312,8 @@ class Member:
             aDict['zipCode'] = ''
         if self.profileLastUpdated:
             aDict['userLastModified'] = self.profileLastUpdated.isoformat()
+        elif self.memberSince:
+            aDict['userLastModified'] = self.memberSince.isoformat()
         else:
             aDict['userLastModified'] = None
         return aDict
@@ -323,11 +327,10 @@ class Member:
                   + str(self.memberID) + "\n"
         if self.memberError is None:
             return aString
-        else:
-            aString += "/tMember Record has errors"
-            for msg in self.memberError.messages:
-                aString += "\t\t" + msg
-            return aString
+        aString += "/tMember Record has errors"
+        for msg in self.memberError.messages:
+            aString += "\t\t" + msg
+        return aString
 
 
 def getMembers():
@@ -410,7 +413,7 @@ try:
         if member.memberError:
             errorList.append(member.memberError)
         if member.isValid:
-            memberList.append(member.toDict())
+            memberList.append(member.toDict)
     payload["memberships"] = memberList
     if CONFIG.parms['PostToRideStats']:
         RIDESTATS_API = RideStatsAPI(CONFIG.parms['RideStatsURL'],
@@ -421,7 +424,7 @@ try:
         with open('rideStatsPayload.json', 'w') as outfile:
             json.dump(payload, outfile)
         CONFIG.logger.info("rideStatsURL = 'localhost'; payload == \n %s",
-                           (payload))
+                           payload)
         rideStatsResponse = "RideStats URL was localHost.  see log for details"
     if CONFIG.logger.isEnabledFor(logging.DEBUG):
         CONFIG.logger.debug("valid members = %s", memberList)
