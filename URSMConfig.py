@@ -51,7 +51,7 @@ CONFIG = {
             'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Creation Date'  ",
            'RideStatsURL': 'https://hbc.qa.ridestats.bike/admin/webservices/membershipUpdateService',
            'RideStatsClubID': 'HBC',
-           'RideStatsKey': 'a6f674ed-645f-4817-b61a-49cba307673d',
-           'PostToRideStats': True
+           'RideStatsKey': 'decf04de-c11d-4dac-b5a9-166c87ad64fb',
+           'PostToRideStats': False
            }
 }
