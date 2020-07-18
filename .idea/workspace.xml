@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0b63f7b-4828-4f72-bda2-c787ef576395" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/input1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/UpdateRideStatsMembership.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/UpdateRideStatsMembership.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/tslcw.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/tslcw.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/URSMConfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/URSMConfig.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateRideStatsMembership.py" beforeDir="false" afterPath="$PROJECT_DIR$/updateRideStatsMembership.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,11 +17,6 @@
         <option value="Python Script" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>Creation</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -185,7 +175,7 @@
       <workItem from="1593534110919" duration="4223000" />
       <workItem from="1594049711698" duration="139000" />
       <workItem from="1594751867628" duration="59000" />
-      <workItem from="1594751974811" duration="886000" />
+      <workItem from="1594751974811" duration="11088000" />
     </task>
     <task id="LOCAL-00001" summary="initial version">
       <created>1572970001343</created>
@@ -234,22 +224,38 @@
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
     <state x="743" y="301" key="FileChooserDialogImpl/0.23.2560.1417@0.23.2560.1417" timestamp="1593878721035" />
-    <state width="717" height="256" key="GridCell.Tab.0.bottom" timestamp="1593878741552">
+    <state width="1051" height="256" key="GridCell.Tab.0.bottom" timestamp="1595041649674">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
-    <state width="717" height="256" key="GridCell.Tab.0.bottom/0.23.2560.1417@0.23.2560.1417" timestamp="1593878741552" />
-    <state width="717" height="256" key="GridCell.Tab.0.center" timestamp="1593878741551">
+    <state width="1051" height="256" key="GridCell.Tab.0.bottom/0.23.2560.1417@0.23.2560.1417" timestamp="1595041649674" />
+    <state width="1051" height="256" key="GridCell.Tab.0.center" timestamp="1595041649673">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
-    <state width="717" height="256" key="GridCell.Tab.0.center/0.23.2560.1417@0.23.2560.1417" timestamp="1593878741551" />
-    <state width="717" height="256" key="GridCell.Tab.0.left" timestamp="1593878741551">
+    <state width="1051" height="256" key="GridCell.Tab.0.center/0.23.2560.1417@0.23.2560.1417" timestamp="1595041649673" />
+    <state width="1051" height="256" key="GridCell.Tab.0.left" timestamp="1595041649672">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
-    <state width="717" height="256" key="GridCell.Tab.0.left/0.23.2560.1417@0.23.2560.1417" timestamp="1593878741551" />
-    <state width="717" height="256" key="GridCell.Tab.0.right" timestamp="1593878741552">
+    <state width="1051" height="256" key="GridCell.Tab.0.left/0.23.2560.1417@0.23.2560.1417" timestamp="1595041649672" />
+    <state width="1051" height="256" key="GridCell.Tab.0.right" timestamp="1595041649673">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
-    <state width="717" height="256" key="GridCell.Tab.0.right/0.23.2560.1417@0.23.2560.1417" timestamp="1593878741552" />
+    <state width="1051" height="256" key="GridCell.Tab.0.right/0.23.2560.1417@0.23.2560.1417" timestamp="1595041649673" />
+    <state width="1051" height="471" key="GridCell.Tab.1.bottom" timestamp="1595041574883">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1051" height="471" key="GridCell.Tab.1.bottom/0.23.2560.1417@0.23.2560.1417" timestamp="1595041574883" />
+    <state width="1051" height="471" key="GridCell.Tab.1.center" timestamp="1595041574882">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1051" height="471" key="GridCell.Tab.1.center/0.23.2560.1417@0.23.2560.1417" timestamp="1595041574882" />
+    <state width="1051" height="471" key="GridCell.Tab.1.left" timestamp="1595041574881">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1051" height="471" key="GridCell.Tab.1.left/0.23.2560.1417@0.23.2560.1417" timestamp="1595041574881" />
+    <state width="1051" height="471" key="GridCell.Tab.1.right" timestamp="1595041574883">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state width="1051" height="471" key="GridCell.Tab.1.right/0.23.2560.1417@0.23.2560.1417" timestamp="1595041574883" />
     <state x="393" y="147" key="SettingsEditor" timestamp="1594752308065">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
@@ -258,9 +264,24 @@
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state x="365" y="435" key="com.intellij.ide.util.TipDialog/0.23.1440.877@0.23.1440.877" timestamp="1589071191411" />
+    <state x="541" y="423" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1595013039683">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="541" y="423" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.23.2560.1417@0.23.2560.1417" timestamp="1595013039683" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/updateRideStatsMembership.py</url>
+          <line>429</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/UpdateRideStatsMembership$updateRideStatsMembership.coverage" NAME="updateRideStatsMembership Coverage Results" MODIFIED="1593877835145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/UpdateRideStatsMembership$updateRideStatsMembership.coverage" NAME="updateRideStatsMembership Coverage Results" MODIFIED="1595041649634" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/UpdateRideStatsMembership$checkStatus.coverage" NAME="checkStatus Coverage Results" MODIFIED="1573788721337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
