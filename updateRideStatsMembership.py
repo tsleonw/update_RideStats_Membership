@@ -133,17 +133,7 @@ class Member:
             self._email = aDict['Email']
             self._membershipType = aDict['MembershipLevel']['Name']
             self._status = aDict['Status']
-            #           print(self.firstName + " " + self.lastName + " Status: " + self.status)
-            try:
-                self._profileLastUpdated = datetime.fromisoformat(
-                    (aDict['ProfileLastUpdated'])[:19]).date()
-            except KeyError as ex:
-                msg = self._firstName + ' ' + self._lastName + \
-                      ' does not have a valid "Profile Last Updated" field in Wild Apricot'
-                msg += '\n\t\t Using current date as "Profile Last Updated" date.'
-                self.postError(msg, aDict, ex)
-            # self._profileLastUpdated = datetime.now().date()
-            #           Extract the values from the relevent WA Fields
+            self._profileLastUpdated = datetime.now().date()
             for field in aDict['FieldValues']:
                 if field['FieldName'] == "Member since":
                     if self._status == 'PendingNew':
@@ -321,12 +311,7 @@ class Member:
             aDict['zipCode'] = self._zipCode
         else:
             aDict['zipCode'] = ''
-        if self._profileLastUpdated:
-            aDict['userLastModified'] = self._profileLastUpdated.isoformat()
-        elif self._memberSince:
-            aDict['userLastModified'] = self._memberSince.isoformat()
-        else:
-            aDict['userLastModified'] = None
+        aDict['userLastModified'] = self._profileLastUpdated.isoformat()
         return aDict
 
     def __str__(self):
