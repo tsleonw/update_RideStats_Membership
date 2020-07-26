@@ -52,6 +52,6 @@ CONFIG = {
            'RideStatsURL': 'https://hbc.qa.ridestats.bike/admin/webservices/membershipUpdateService',
            'RideStatsClubID': 'HBC',
            'RideStatsKey': 'decf04de-c11d-4dac-b5a9-166c87ad64fb',
-           'PostToRideStats': False
+           'PostToRideStats': True
            }
 }
