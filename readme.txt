@@ -8,7 +8,9 @@ the following files are included in this zip file:
     where "PROD" or "QA" represent the environment that is being invoked. 
 3.  URSMCONFIG.py  -- A python file containing the configuration information for both the PROD and QA environment.  The configuration values are entries in a dictionary.  This scheme is used in lieu of a more traditional config file since it is just as easy to change a python file as it is to change a config file, and no compilation is needed.
 4.  rideStatsClient.py -- this file encapsulates the interaction with the RideStats web service.
-5.  waAPIClient.py -- this file encapsulates the interaction with the Wild Apricot API.  
+5.  waAPIClient.py -- this file encapsulates the interaction with the Wild Apricot API.
+6.  Deploy.py -- this file automates the deployment of the system, creating the zip file and copying all files to either a production directory
+    or a test directory (to test the deployment).
 
 This directory should be unzipped to create a "updateRideStats" directory which is located in the user's home directory.  
 
