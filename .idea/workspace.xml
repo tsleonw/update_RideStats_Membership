@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0b63f7b-4828-4f72-bda2-c787ef576395" name="Default Changelist" comment="initial version">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/UpdateRideStatsMembership.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/UpdateRideStatsMembership.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/URSMConfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/URSMConfig.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hbc_Member.py" beforeDir="false" afterPath="$PROJECT_DIR$/hbc_Member.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/readme.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateRideStats.sh" beforeDir="false" afterPath="$PROJECT_DIR$/updateRideStats.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateRideStatsMembership.py" beforeDir="false" afterPath="$PROJECT_DIR$/updateRideStatsMembership.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/waAPIClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/waAPIClient.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,7 +223,7 @@
       <workItem from="1608510296834" duration="4044000" />
       <workItem from="1608570582037" duration="1296000" />
       <workItem from="1608572611920" duration="1491000" />
-      <workItem from="1611626043334" duration="2583000" />
+      <workItem from="1611626043334" duration="3255000" />
     </task>
     <task id="LOCAL-00001" summary="initial version">
       <created>1572970001343</created>
