@@ -14,7 +14,7 @@ the following files are included in this zip file:
 
 This directory should be unzipped to create a "updateRideStats" directory which is located in the user's home directory.  
 
-The job is scheduled using the standard cron utility with the followig crontab entry:
+The job is scheduled using the standard cron utility with the following crontab entry:
      0 0* * * * cd ~/updateRideStats && ./updateRideStats.sh
 
 

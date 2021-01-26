@@ -15,6 +15,7 @@ import sys
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import traceback
 
 import URSMConfig
 from hbc_Member import HBCMember
@@ -182,7 +183,8 @@ try:
     emailResults()
 
 except Exception as ex:
-    print(ex)
+    traceback.print_exc()
+
 
 finally:
     logging.shutdown()

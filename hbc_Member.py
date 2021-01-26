@@ -176,7 +176,7 @@ class HBCMember:
 
     def toDict(self):
         """
-        render a json representation of a member
+        render a dictionary representation of a member which can be used to create a json representation.
         """
         aDict = {}
         aDict["clubMemberId"] = self._memberID

@@ -4,4 +4,4 @@ rideStatsPayload.json
 logs/
 *.pyc
 *.zip
-
+deployTest/
