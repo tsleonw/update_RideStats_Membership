@@ -22,11 +22,11 @@ CONFIG = {
              'filter': 'member eq true',
              'top': 0,
              'async': False,
-             'select': "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due' \
-              'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone' \
-              'City' 'State' 'Postal code' 'Member emails and newsletters' \
-              'Emergency Contact' 'Emergency Contact Phone'  'Birthday'",
-             'RideStatsURL': 'https://hbc.ridestats.bike/admin/webservices/membershipUpdateService',
+             'select': "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due'\
+              'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
+              'Address' 'City' 'State' 'Postal code' 'Member emails and newsletters' \
+              'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' 'Creation Date'  ",
+              'RideStatsURL': 'https://hbc.ridestats.bike/admin/webservices/membershipUpdateService',
              'RideStatsClubID': 'HBC',
              'RideStatsKey': 'bd582f04-c87c-4f1e-b26a-97d3968a2ca2',
              'PostToRideStats': True
@@ -47,8 +47,8 @@ CONFIG = {
            'async': False,
            'select': "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due'\
             'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
-            'City' 'State' 'Postal code' 'Member emails and newsletters' \
-            'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Creation Date'  ",
+            'Address' 'City' 'State' 'Postal code' 'Member emails and newsletters' \
+            'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' 'Creation Date'  ",
            'RideStatsURL': 'https://hbc.qa.ridestats.bike/admin/webservices/membershipUpdateService',
            'RideStatsClubID': 'HBC',
            'RideStatsKey': 'a0c38463-5a4f-4c3b-8993-da86183030dd',

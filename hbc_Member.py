@@ -16,18 +16,19 @@ class HBCMember:
         try:
             try:
                 self._firstName = aDict['FirstName']
-            except KeyError as ex:
-                msg = "Error populating member first name" + ex.__repr__()
-                self.postError(msg, aDict, ex)
-            try:
                 self._lastName = aDict['LastName']
             except KeyError as ex:
-                msg = "Error populating member last name" + ex.__repr__()
+                msg = "Error populating member first or last name" + ex.__repr__()
                 self.postError(msg, aDict, ex)
             self._email = aDict['Email']
             self._membershipType = aDict['MembershipLevel']['Name']
             self._status = aDict['Status']
             self._profileLastUpdated = datetime.now().date()
+            """
+            remaining values are found in a single dictionary entry called 'FieldValues' 
+            that in turn contains a dictionary of fields and values.
+            """
+            
             for field in aDict['FieldValues']:
                 if field['FieldName'] == "Member since":
                     if self._status == 'PendingNew':
@@ -68,6 +69,8 @@ class HBCMember:
                     self._memberID = field['Value']
                 elif field['FieldName'] == 'Alias':
                     self._alias = field['Value']
+                elif field['FieldName'] == 'Address':
+                    self._address = field['Value']
                 elif field['FieldName'] == 'City':
                     self._city = field['Value']
                 elif field['FieldName'] == 'State':
@@ -83,6 +86,7 @@ class HBCMember:
                         msg = self.firstName + ' ' + self.lastName + \
                               ' does not have an emergency contact phone number.'
                         self.postError(msg, aDict, None)"""
+                
                 elif field['FieldName'] == 'Birthday':
                     self._birthDate = field['Value']
                 elif field['FieldName'] == "Group participation":
@@ -121,6 +125,7 @@ class HBCMember:
         self._status = None
         self._mobilePhone = None
         self._telephone = None
+        self._address = None
         self._city = None
         self._state = None
         self._zipCode = None
@@ -176,14 +181,13 @@ class HBCMember:
 
     def toDict(self):
         """
-        render a dictionary representation of a member which can be used to create a json representation.
+        render a dictionary representation of a member which can then be used to create a json representation.
         """
         aDict = {}
         aDict["clubMemberId"] = self._memberID
         aDict["firstName"] = self._firstName
         aDict["lastName"] = self._lastName
         aDict['alias'] = self._alias
-        aDict['city'] = self._city
         aDict['emailAddress'] = self._email
         aDict["gender"] = self._gender
         if self._memberSince:
@@ -201,13 +205,15 @@ class HBCMember:
             aDict["rideLeader"] = True
         else:
             aDict["rideLeader"] = False
-        aDict['state'] = self._state
         aDict['emergencyContactName'] = self._emergencyContact
         aDict['emergencyContactPhone'] = self._emergencyContactPhone
         if self._birthDate:
             aDict['birthDate'] = self._birthDate
         else:
             aDict['birthDate'] = ''
+        aDict['address'] = self._address
+        aDict['city'] = self._city
+        aDict['state'] = self._state
         if self._zipCode:
             aDict['zipCode'] = self._zipCode
         else:
