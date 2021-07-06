@@ -6,3 +6,4 @@ logs/
 *.zip
 deployTest/
 venv/
+.spyproject/
