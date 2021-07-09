@@ -5,5 +5,5 @@ logs/
 *.pyc
 *.zip
 deployTest/
-venv/
+.venv/
 .spyproject/
