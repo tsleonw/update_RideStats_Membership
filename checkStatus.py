@@ -8,16 +8,8 @@ date, the email is sent to the administrator alerting them that the job did not 
 log file was not produced.  
 """
 
-
-
-import smtplib
-import sys
-from datetime import date, datetime
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+from datetime import date
 from os import path
-
-import URSMConfig
 
 logDirectory = '/Users/tslcw/UpdateRideStats/logs/'
 

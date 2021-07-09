@@ -4,7 +4,22 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0b63f7b-4828-4f72-bda2-c787ef576395" name="Default Changelist" comment="" />
+    <list default="true" id="a0b63f7b-4828-4f72-bda2-c787ef576395" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Deploy.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Deploy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RideStatsmapping.numbers" beforeDir="false" afterPath="$PROJECT_DIR$/doc/RideStatsmapping.numbers" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/URSMConfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/URSMConfig.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkStatus.py" beforeDir="false" afterPath="$PROJECT_DIR$/checkStatus.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hbc_Member.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/hbc_Member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/member_Error.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/member_Error.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rideStatsClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rideStatsClient.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateRideStats.sh" beforeDir="false" afterPath="$PROJECT_DIR$/src/updateRideStats.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateRideStatsMembership.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/updateRideStatsMembership.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/waAPIClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/waAPIClient.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,7 +71,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs.jest.jest_package" value="" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="reference.idesettings.emmet.xml" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -64,6 +79,12 @@
         <option name="useSoftWraps" value="true" />
       </console-settings>
     </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/doc" />
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.updateRideStatsMembership">
     <configuration name="Deploy" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -79,7 +100,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Deploy.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/Deploy.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -123,7 +144,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/updateRideStatsMembership.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/updateRideStatsMembership.py" />
       <option name="PARAMETERS" value="QA" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
@@ -234,7 +255,8 @@
       <workItem from="1617820929887" duration="30000" />
       <workItem from="1621188408262" duration="814000" />
       <workItem from="1625541349116" duration="1274000" />
-      <workItem from="1625543382706" duration="1470000" />
+      <workItem from="1625543382706" duration="2390000" />
+      <workItem from="1625803696003" duration="855000" />
     </task>
     <task id="LOCAL-00001" summary="initial version">
       <created>1572970001343</created>
@@ -277,32 +299,32 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/updateRideStatsMembership.py</url>
+          <url>file://$PROJECT_DIR$/src/updateRideStatsMembership.py</url>
           <line>164</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/updateRideStatsMembership.py</url>
+          <url>file://$PROJECT_DIR$/src/updateRideStatsMembership.py</url>
           <line>161</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/updateRideStatsMembership.py</url>
+          <url>file://$PROJECT_DIR$/src/updateRideStatsMembership.py</url>
           <line>154</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/updateRideStatsMembership.py</url>
+          <url>file://$PROJECT_DIR$/src/updateRideStatsMembership.py</url>
           <line>156</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/hbc_Member.py</url>
+          <url>file://$PROJECT_DIR$/src/hbc_Member.py</url>
           <line>103</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/updateRideStatsMembership.py</url>
+          <url>file://$PROJECT_DIR$/src/updateRideStatsMembership.py</url>
           <line>172</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
@@ -311,7 +333,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/UpdateRideStatsMembership$checkStatus.coverage" NAME="checkStatus Coverage Results" MODIFIED="1573788721337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/UpdateRideStatsMembership$updateRideStatsMembership.coverage" NAME="updateRideStatsMembership Coverage Results" MODIFIED="1621188479344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/UpdateRideStatsMembership$updateRideStatsMembership.coverage" NAME="updateRideStatsMembership Coverage Results" MODIFIED="1625804474470" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/UpdateRideStatsMembership$Deploy.coverage" NAME="Deploy Coverage Results" MODIFIED="1595815288182" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

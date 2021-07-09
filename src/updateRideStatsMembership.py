@@ -18,8 +18,8 @@ from email.mime.text import MIMEText
 import traceback
 
 import URSMConfig
-from hbc_Member import HBCMember
-from rideStatsClient import RideStatsAPI
+from src.hbc_Member import HBCMember
+from src.rideStatsClient import RideStatsAPI
 from waAPIClient import WaAPIClient
 
 
@@ -168,7 +168,7 @@ try:
                                      logLevel=CONFIG.logLevel)
         rideStatsResponse = RIDESTATS_API.postToRideStats(payload)
     else:
-        with open('rideStatsPayload.json', 'w') as outfile:
+        with open('../rideStatsPayload.json', 'w') as outfile:
             json.dump(payload, outfile)
         CONFIG.logger.info("rideStatsURL = 'localhost'; payload == \n %s",
                            payload)

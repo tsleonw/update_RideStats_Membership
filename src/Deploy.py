@@ -43,7 +43,7 @@ def createZipFile():
     create a zip file of the files needed to update the membership list in rideStats.
     """
 
-    zip = ZipFile('UpdateRideStats.zip', 'w')
+    zip = ZipFile('../UpdateRideStats.zip', 'w')
     """
     zip.write('rideStatsClient.py')
     zip.write('updateRideStats.sh')
