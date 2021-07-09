@@ -7,4 +7,5 @@ logs/
 deployTest/
 .venv/
 .spyproject/
-.idea
+.idea/
+
