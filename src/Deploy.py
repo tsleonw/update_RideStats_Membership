@@ -3,7 +3,7 @@
 This module automates the deployment of the files needed to Update the HBC membership in RideStats.
 it can be invoked from a shell with the following command:
 
-    python3 Deploy.py [PROD|TEST]
+    python3 Deploy.py [PROD|QA]
 
 where "PROD" or "TEST" indicate the environment you wish to deploy.
 
@@ -13,62 +13,56 @@ a production location
 """
 
 from zipfile import ZipFile
-from shutil import copy
 import os
 import sys
+from shutil import copy
+
 
 prodDir = "/Users/tslcw/updateRideStats"
-testDir = "./deployTest"
-manifest = ["waAPIClient.py",
-            "URSMConfig.py",
-            "updateRideStatsMembership.py",
-            "hbc_Member.py",
-            "member_Error.py",
-            "updateRideStats.zip",
-            "rideStatsClient.py",
-            "updateRideStats.sh",
-            "readme.txt",
-            "Deploy.py",
-            "RideStatsmapping.numbers"
+testDir = "deployTest"
+manifest = ["src/waAPIClient.py",
+            "src/URSMConfig.py",
+            "src/updateRideStatsMembership.py",
+            "src/hbc_Member.py",
+            "src/member_Error.py",
+            "src/rideStatsClient.py",
+            "src/updateRideStats.sh",
+            "doc/readme.txt",
+            "src/Deploy.py",
+            "doc/RideStatsmapping.numbers",
             ]
-targetDirectory = "/Users/tslcw/UpdateRideStats/Test/"
 
-def copyFiles(manifest, targetDirectory):
+
+def copyFiles(target_directory):
     for file in manifest:
-        newFile = copy(file,targetDirectory)
+        newFile = copy(file, target_directory)
         print("created file:  ", newFile)
 
-def createZipFile():
+
+def createZipFile(target_directory):
     """
     create a zip file of the files needed to update the membership list in rideStats.
     """
 
-    zip = ZipFile('../UpdateRideStats.zip', 'w')
-    """
-    zip.write('rideStatsClient.py')
-    zip.write('updateRideStats.sh')
-    zip.write('updateRideStatsMembership.py')
-    zip.write('URSMConfig.py')
-    zip.write("waAPIClient.py")
-    zip.write("readme.txt")
-    zip.write("Deploy.py")"""
-    for file in manifest:
-        if file != 'updateRideStats.zip':
-            zip.write(file)
-    zip.close()
+    with ZipFile(target_directory + '/ursm.zip', 'w') as deployZip:
+        deployZip.debug = 3
+        for file in manifest:
+            deployZip.write(file)
 
-createZipFile()
+
+
 if len(sys.argv) < 2:
     print("usage: 'python3 Deploy [PROD|TEST]")
     exit(1)
 else:
     if sys.argv[1] == "PROD":
         targetDirectory = prodDir
-    elif sys.argv[1] == "TEST":
+    elif sys.argv[1] == "QA":
         targetDirectory = testDir
     else:
-        print("usage: 'python3 Deploy [PROD|TEST]")
+        print("usage: 'python3 Deploy [PROD|QA]")
         exit(1)
 if not os.path.exists(targetDirectory):
     os.makedirs(targetDirectory)
-copyFiles(manifest, targetDirectory)
+createZipFile(targetDirectory)
+copyFiles(targetDirectory)
