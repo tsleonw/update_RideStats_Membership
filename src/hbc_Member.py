@@ -163,7 +163,6 @@ class HBCMember:
         self._profileLastUpdated = None
         self._gender = None
         self._isValid = True
-        self._memberError = None
         self._emergencyContact = None
         self._emergencyContactPhone = None
         self._memberError = None
