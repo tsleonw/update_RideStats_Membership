@@ -26,9 +26,9 @@ manifest = ["src/waAPIClient.py",
             "src/hbc_Member.py",
             "src/member_Error.py",
             "src/rideStatsClient.py",
-            "src/updateRideStats.sh",
+            "updateRideStats.sh",
             "doc/readme.txt",
-            "src/Deploy.py",
+            "src/deploy.py",
             "doc/RideStatsmapping.numbers",
             ]
 
@@ -62,6 +62,7 @@ else:
     else:
         print("usage: 'python3 Deploy [PROD|QA]")
         exit(1)
+os.chdir("/Users/tslcw/Dropbox/Projects/UpdateRideStatsMembership")
 if not os.path.exists(targetDirectory):
     os.makedirs(targetDirectory)
 createZipFile(targetDirectory)
