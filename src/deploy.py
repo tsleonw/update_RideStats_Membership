@@ -12,24 +12,23 @@ at http://www.hiawathabike.org/resources/RideStats.  Then all files listed in th
 a production location
 """
 
-from zipfile import ZipFile
 import os
 import sys
 from shutil import copy
-
+from zipfile import ZipFile
 
 prodDir = "/Users/tslcw/updateRideStats"
 testDir = "deployTest"
-manifest = ["src/waAPIClient.py",
-            "src/URSMConfig.py",
-            "src/updateRideStatsMembership.py",
+manifest = ["src/deploy.py",
             "src/hbc_Member.py",
             "src/member_Error.py",
             "src/rideStatsClient.py",
+            "src/updateRideStatsMembership.py",
+            "src/URSMConfig.py",
+            "src/waAPIClient.py",
             "updateRideStats.sh",
-            "doc/readme.txt",
-            "src/deploy.py",
             "doc/RideStatsmapping.numbers",
+            "doc/readme.txt",
             ]
 
 
@@ -48,7 +47,6 @@ def createZipFile(target_directory):
         deployZip.debug = 3
         for file in manifest:
             deployZip.write(file)
-
 
 
 if len(sys.argv) < 2:
