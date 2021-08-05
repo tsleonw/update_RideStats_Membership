@@ -7,21 +7,33 @@ and an email is produced which reports the status of the run and lists any
 errorList.
 """
 
-import logging
-from logging.handlers import TimedRotatingFileHandler
+import argparse
 import json
+import logging
 import smtplib
 import sys
+import traceback
+
+from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import traceback
+
 
 import URSMConfig
-from src.hbc_Member import HBCMember
-from src.rideStatsClient import RideStatsAPI
+
+from hbc_Member import HBCMember
+from rideStatsClient import RideStatsAPI
 from waAPIClient import WaAPIClient
 
+#Global Variables -- see if we can minimize these:
+
+startTime = None
+CONFIG = None
+WA_API = None
+memberList = None
+errorList = None
+rideStatsResponse = None
 
 class Config:
     """
@@ -141,7 +153,9 @@ def emailResults():
             server.quit()
 
 
-try:
+def main():
+    global startTime, CONFIG, WA_API, memberList, errorList, rideStatsResponse
+
     startTime = datetime.utcnow()
     CONFIG = Config()
     WA_API = WaAPIClient(CONFIG.parms['clientID'],
@@ -182,9 +196,12 @@ try:
         CONFIG.logger.info('%s non-fatal errors were found', str(len(errorList)))
     emailResults()
 
-except Exception as ex:
-    traceback.print_exc()
+  
 
-
-finally:
-    logging.shutdown()
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as ex:
+         traceback.print_exc()
+    finally:
+        logging.shutdown()
