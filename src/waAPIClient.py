@@ -7,10 +7,11 @@ written by Leon Webster
 version 1.0 12/20/2018
 
 """
+
 import base64
 import logging
 import requests
-
+from dotenv import dotenv_values
 
 class WaAPIClient:
     """
@@ -20,28 +21,31 @@ class WaAPIClient:
     auth_endpoint = "https://oauth.wildapricot.org/auth/token"
     api_endpoint = "https://api.wildapricot.org"
     _token = None
-    _clientId = None
-    _client_secret = None
     _version = "v2.1"
-    _APIKey = None
     logger = None
 
-    def __init__(self, clientId, clientSecret, APIKey, logLevel=logging.DEBUG):
-        if clientId is None or clientSecret is None or APIKey is None:
-            raise Exception(
-                "cannot create WaApiClient with clientID = ",
-                clientId,
-                "and clientSecret = ",
-                clientSecret,
-            )
-        self._clientId = clientId
-        self._clientSecret = clientSecret
-        self._APIKey = APIKey
+    def __init__(self, CONFIG):
+        self._clientId = dotenv_values()['WA_CLIENT_ID']
+        self._client_secret = dotenv_values()['WA_CLIENT_SECRET']
+        self._APIKey = dotenv_values()['WA_API_KEY']
+        self._client_account = dotenv_values()['WA_CLIENT_ACCOUNT']
+        self._request_parms = {}
+        if CONFIG.parms['filter']:
+            self._request_parms["$filter"] = CONFIG.parms['filter']
+        if CONFIG.parms['async']:
+            self._request_parms['$async'] = 'True'
+        else:
+            self._request_parms['$async'] = 'False'
+        if CONFIG.parms['top'] > 0:
+            self._requests_parms['$top'] = CONFIG.parms['top']
+        if CONFIG.parms['select']:
+            self._request_parms['$select'] = CONFIG.parms['select']
+        CONFIG.logger.debug('Params = %s', str(self._request_parms))
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logLevel)
+        self.logger.setLevel(CONFIG.logLevel)
         # set the log level for the requests module too
-        logging.getLogger("requests").setLevel(logLevel)
-        logging.getLogger("urllib3").setLevel(logLevel)
+        logging.getLogger("requests").setLevel(CONFIG.logLevel)
+        logging.getLogger("urllib3").setLevel(CONFIG.logLevel)
 
     def authenticateWithAPIKey(self, scope=None):
         """
@@ -62,7 +66,7 @@ class WaAPIClient:
         self._token = authResponse.json()["access_token"]
         # print('token = ' + self._token)
 
-    def getContacts(self, params, accountNumber):
+    def getContacts(self):
         """
         return a list of contacts using the parms passed by the caller.
         call authenticateWithAPIKEY() first to get a new security token
@@ -78,10 +82,10 @@ class WaAPIClient:
             + "/"
             + self._version
             + "/accounts/"
-            + accountNumber
+            + self._client_account
             + "/Contacts/"
         )
-        response = requests.get(url, params=params, headers=headers)
+        response = requests.get(url, params=self._request_parms, headers=headers)
         self.logger.info(
             "response from Wild Apricot API was " + str(response.status_code)
         )

@@ -5,8 +5,10 @@ Created on Sat Jan  5 11:37:44 2019
 @author: tslcw
 """
 
+
 import logging
 import requests
+from dotenv import dotenv_values
 
 
 class RideStatsAPI:
@@ -17,14 +19,14 @@ class RideStatsAPI:
     _rideStatsKey = None
     _logger = None
 
-    def __init__(self, rideStatsURL, rideStatsKey, logLevel=logging.DEBUG):
-        self._rideStatsURL = rideStatsURL
-        self._rideStatsKey = rideStatsKey
+    def __init__(self, CONFIG):
+        self._rideStatsKey = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_KEY']
+        self._rideStatsURL = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_URL']
         self._logger = logging.getLogger(__name__)
-        self._logger.setLevel(logLevel)
+        self._logger.setLevel(CONFIG.logLevel)
         # set the log level for the requests module too
-        logging.getLogger('requests').setLevel(logLevel)
-        logging.getLogger('urllib3').setLevel(logLevel)
+        logging.getLogger('requests').setLevel(CONFIG.logLevel)
+        logging.getLogger('urllib3').setLevel(CONFIG.logLevel)
 
     def postToRideStats(self, payload):
         """

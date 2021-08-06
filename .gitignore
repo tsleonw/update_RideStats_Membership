@@ -9,3 +9,4 @@ deployTest/
 .spyproject/
 .idea/
 .vscode/
+.env

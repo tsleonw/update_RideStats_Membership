@@ -16,9 +16,9 @@ import traceback
 
 from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
+from dotenv import dotenv_values
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
 
 import URSMConfig
 
@@ -26,14 +26,6 @@ from hbc_Member import HBCMember
 from rideStatsClient import RideStatsAPI
 from waAPIClient import WaAPIClient
 
-#Global Variables -- see if we can minimize these:
-
-startTime = None
-CONFIG = None
-WA_API = None
-memberList = None
-errorList = None
-rideStatsResponse = None
 
 class Config:
     """
@@ -60,13 +52,14 @@ class Config:
         load the appropriate parms depending upon the environment that was
         passed in
         """
-        if len(sys.argv) < 2 or (sys.argv[1] != 'PROD' and sys.argv[1] != 'QA'):
-            print('No environment specified. \n')
-            print('usage:  updateRideStatsMembership.py PROD|QA')
-            sys.exit(1)
-        else:
-            self.environment = sys.argv[1]
-            self.parms = URSMConfig.CONFIG[self.environment]
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            'env',
+            help='specify the environment for updating RideStats. Either "QA" or "PROD"',
+            choices=["PROD", "QA"],
+        )
+        self.environment = parser.parse_args().env
+        self.parms = URSMConfig.CONFIG[self.environment]
 
     def initLogger(self):
         """
@@ -89,26 +82,7 @@ class Config:
         self.logger.info(msg='loaded parms for the ' + self.environment + ' environment')
 
 
-def getMembers():
-    """
-    make a call to Wild Apricot and return a list of members
-    """
-    params = {}
-    if CONFIG.parms['filter']:
-        params["$filter"] = CONFIG.parms['filter']
-    if CONFIG.parms['async']:
-        params['$async'] = 'True'
-    else:
-        params['$async'] = 'False'
-    if CONFIG.parms['top'] > 0:
-        params['$top'] = CONFIG.parms['top']
-    if CONFIG.parms['select']:
-        params['$select'] = CONFIG.parms['select']
-    CONFIG.logger.debug('Params = %s', str(params))
-    return WA_API.getContacts(params, CONFIG.parms['clientAccount'])
-
-
-def emailResults():
+def emailResults(CONFIG, startTime, rideStatsResponse, errorList):
     """
     send an email detailing the work
     """
@@ -116,11 +90,14 @@ def emailResults():
     endTime = datetime.utcnow()
     numMembers = len(memberList)
     numerrorList = len(errorList)
+    url = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_URL']
+    from_address = dotenv_values()[f'{CONFIG.environment}_SMTP_FROM_ADDRESS']
+    password = dotenv_values()[f'{CONFIG.environment}_SMTP_PASSWORD']
 
     msgText = "RideStatsMemberUpdate started at " + startTime.isoformat() + "\n"
     msgText += "RideStatsMemberUpdate completed at " + endTime.isoformat() + "\n"
     msgText += "duration was " + str(endTime - startTime) + "\n"
-    msgText += 'The RideStats URL was ' + CONFIG.parms['RideStatsURL'] + '\n'
+    msgText += 'The RideStats URL was ' + url + '\n'
     msgText += "There were " + str(numMembers) + " members processed.\n"
     msgText += "There were " + str(numerrorList) + " members with errors\n"
     if errorList:
@@ -132,7 +109,7 @@ def emailResults():
     msgText += "the response from RideStats was:\n"
     msgText += rideStatsResponse
     msg = MIMEMultipart()
-    msg['From'] = CONFIG.parms['smtpFromAddress']
+    msg['From'] = from_address
     msg['To'] = CONFIG.parms['smtpToAddress']
     msg['Subject'] = 'Update RideStats Job Results'
     msg.attach(MIMEText(msgText, 'plain'))
@@ -141,9 +118,9 @@ def emailResults():
         server = smtplib.SMTP(CONFIG.parms['smtpServer'],
                               CONFIG.parms['smtpPort'])
         server.starttls()
-        server.login(CONFIG.parms['smtpFromAddress'],
-                     CONFIG.parms['smtpPassword'])
-        server.sendmail(CONFIG.parms['smtpFromAddress'],
+        server.login(from_address,
+                     password)
+        server.sendmail(from_address,
                         CONFIG.parms['smtpToAddress'],
                         msg.as_string())
     except Exception as ex:
@@ -154,15 +131,40 @@ def emailResults():
 
 
 def main():
-    global startTime, CONFIG, WA_API, memberList, errorList, rideStatsResponse
-
     startTime = datetime.utcnow()
     CONFIG = Config()
-    WA_API = WaAPIClient(CONFIG.parms['clientID'],
-                         CONFIG.parms['clientSecret'],
-                         CONFIG.parms['apiKey'],
-                         CONFIG.logLevel)
-    waResponse = getMembers()
+    # start getting Wild Apricot response
+    WA_API = WaAPIClient(CONFIG)
+    waResponse = WA_API.getContacts()
+    # End getting Wild Apricot Response
+    # Start Constructing RideStats POST
+    payload, errorList = construct_RideStats_payload(CONFIG, waResponse)
+    # End Constructing RideStats POST
+    # Post to RideStats or write to file
+    if CONFIG.parms['PostToRideStats']:
+        RIDESTATS_API = RideStatsAPI(CONFIG)
+        rideStatsResponse = RIDESTATS_API.postToRideStats(payload)
+    else:
+        with open('../rideStatsPayload.json', 'w') as outfile:
+            json.dump(payload, outfile)
+        CONFIG.logger.info("rideStatsURL = 'localhost'; payload == \n %s",
+                           payload)
+        rideStatsResponse = "RideStats URL was localHost.  see log for details"
+    # End post to RideStats or File
+    # Log results
+    if CONFIG.logger.isEnabledFor(logging.DEBUG):
+        CONFIG.logger.debug("valid members = %s", memberList)
+        CONFIG.logger.debug("errorList = %s", errorList)
+    if CONFIG.logger.isEnabledFor(logging.INFO):
+        CONFIG.logger.info('%s members were successfully validated', str(len(memberList)))
+        CONFIG.logger.info("response from RideStats was %s", rideStatsResponse)
+        CONFIG.logger.info('%s non-fatal errors were found', str(len(errorList)))
+    # Email Results
+    emailResults(CONFIG, startTime, rideStatsResponse, errorList)
+
+
+def construct_RideStats_payload(CONFIG, waResponse):
+    global memberList, errorList
     memberList = []
     errorList = []
     payload = {"clubId": "HBC"}
@@ -176,32 +178,13 @@ def main():
             CONFIG.logger.error(msg="invalid member record: "
                                     + member.str())
     payload["memberships"] = memberList
-    if CONFIG.parms['PostToRideStats']:
-        RIDESTATS_API = RideStatsAPI(CONFIG.parms['RideStatsURL'],
-                                     CONFIG.parms['RideStatsKey'],
-                                     logLevel=CONFIG.logLevel)
-        rideStatsResponse = RIDESTATS_API.postToRideStats(payload)
-    else:
-        with open('../rideStatsPayload.json', 'w') as outfile:
-            json.dump(payload, outfile)
-        CONFIG.logger.info("rideStatsURL = 'localhost'; payload == \n %s",
-                           payload)
-        rideStatsResponse = "RideStats URL was localHost.  see log for details"
-    if CONFIG.logger.isEnabledFor(logging.DEBUG):
-        CONFIG.logger.debug("valid members = %s", memberList)
-        CONFIG.logger.debug("errorList = %s", errorList)
-    if CONFIG.logger.isEnabledFor(logging.INFO):
-        CONFIG.logger.info('%s members were successfully validated', str(len(memberList)))
-        CONFIG.logger.info("response from RideStats was %s", rideStatsResponse)
-        CONFIG.logger.info('%s non-fatal errors were found', str(len(errorList)))
-    emailResults()
+    return payload, errorList
 
-  
 
 if __name__ == "__main__":
     try:
         main()
     except Exception as ex:
-         traceback.print_exc()
+        traceback.print_exc()
     finally:
         logging.shutdown()
