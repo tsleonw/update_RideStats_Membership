@@ -29,9 +29,11 @@ manifest = ["src/deploy.py",
             "updateRideStats.sh",
             ".env",
             ".env.sample",
+            "LICENSE"
             '.gitignore',
             "doc/RideStatsmapping.numbers",
             "doc/readme.txt",
+            'doc/Readme.md'
             ]
 
 
@@ -46,7 +48,7 @@ def createZipFile(target_directory):
     create a zip file of the files needed to update the membership list in rideStats.
     """
 
-    with ZipFile(target_directory + '/ursm.zip', 'w') as deployZip:
+    with ZipFile(target_directory + '/updateRideStats.zip', 'w') as deployZip:
         deployZip.debug = 3
         for file in manifest:
             deployZip.write(file)
