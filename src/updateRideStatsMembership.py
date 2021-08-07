@@ -10,6 +10,7 @@ errorList.
 import argparse
 import json
 import logging
+import logging.config
 import smtplib
 import sys
 import traceback
@@ -63,19 +64,12 @@ class Config:
 
     def initLogger(self):
         """
-        initialize the logging using a timed rotating file handler
+        initialize  logging using the dictionary in the config file
         """
         try:
-            logFormat = logging.Formatter('%(asctime)s | %(levelname)s \
-                                          |%(module)s:%(lineno)d | %(message)s')
-            self.logLevel = getattr(logging, self.parms['logLevel'].upper())
-            handler = TimedRotatingFileHandler(self.parms['logFile'],
-                                               when='midnight',
-                                               backupCount=28)
-            handler.setFormatter(logFormat)
-            self.logger = logging.getLogger()
-            self.logger.setLevel(self.logLevel)
-            self.logger.addHandler(handler)
+            logging.config.dictConfig(URSMConfig.LOGGING)
+            self.logger = logging.getLogger(f'{self.environment}_URSM')
+            self.logger.debug("logging configured")
         except Exception as ex:
             print("could not initialize logging:  ", ex)
             sys.exit(1)
@@ -92,6 +86,7 @@ def emailResults(CONFIG, startTime, rideStatsResponse, errorList):
     numerrorList = len(errorList)
     url = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_URL']
     from_address = dotenv_values()[f'{CONFIG.environment}_SMTP_FROM_ADDRESS']
+    to_address = dotenv_values()['SMTP_TO_ADDRESS']
     password = dotenv_values()[f'{CONFIG.environment}_SMTP_PASSWORD']
 
     msgText = "RideStatsMemberUpdate started at " + startTime.isoformat() + "\n"
@@ -110,7 +105,7 @@ def emailResults(CONFIG, startTime, rideStatsResponse, errorList):
     msgText += rideStatsResponse
     msg = MIMEMultipart()
     msg['From'] = from_address
-    msg['To'] = CONFIG.parms['smtpToAddress']
+    msg['To'] = to_address
     msg['Subject'] = 'Update RideStats Job Results'
     msg.attach(MIMEText(msgText, 'plain'))
 
@@ -121,7 +116,7 @@ def emailResults(CONFIG, startTime, rideStatsResponse, errorList):
         server.login(from_address,
                      password)
         server.sendmail(from_address,
-                        CONFIG.parms['smtpToAddress'],
+                        to_address,
                         msg.as_string())
     except Exception as ex:
         CONFIG.logger.exception(ex)
@@ -167,7 +162,8 @@ def construct_RideStats_payload(CONFIG, waResponse):
     global memberList, errorList
     memberList = []
     errorList = []
-    payload = {"clubId": "HBC"}
+    CLUB_ID = dotenv_values()['RIDESTATS_CLUB_ID']
+    payload = {"clubId": CLUB_ID}
     for each in waResponse:
         member = HBCMember(each)
         if member.memberError:
@@ -186,5 +182,6 @@ if __name__ == "__main__":
         main()
     except Exception as ex:
         traceback.print_exc()
+        sys.exit(1)
     finally:
         logging.shutdown()

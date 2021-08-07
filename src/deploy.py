@@ -29,7 +29,7 @@ manifest = ["src/deploy.py",
             "updateRideStats.sh",
             ".env",
             ".env.sample",
-            "LICENSE"
+            "LICENSE",
             '.gitignore',
             "doc/RideStatsmapping.numbers",
             "doc/readme.txt",

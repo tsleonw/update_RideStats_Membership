@@ -14,7 +14,8 @@ In order to use this program you need to do the following:
 
 1.  unzip the updateRideStats.zip file to create a updateRideStats directory. 
 2.  cd to the updateRideStats directory.
-3.  create a virtual environment using the following command:```
+3.  create a virtual environment using the following command:
+```
 python3 -m venv .venv --prompt ursm
 
 ```

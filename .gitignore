@@ -1,6 +1,6 @@
 *.log
 __pycache__/
-rideStatsPayload.json
+*.json
 logs/
 *.pyc
 *.zip

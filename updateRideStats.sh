@@ -2,5 +2,5 @@
 source ~/.bash_profile
 cd ~/UpdateRideStats
 source .venv/bin/activate
-python3 src/updateRideStatsMembership PROD
+python3 src/updateRideStatsMembership.py PROD
 deactivate

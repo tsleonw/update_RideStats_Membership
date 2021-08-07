@@ -22,11 +22,7 @@ class RideStatsAPI:
     def __init__(self, CONFIG):
         self._rideStatsKey = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_KEY']
         self._rideStatsURL = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_URL']
-        self._logger = logging.getLogger(__name__)
-        self._logger.setLevel(CONFIG.logLevel)
-        # set the log level for the requests module too
-        logging.getLogger('requests').setLevel(CONFIG.logLevel)
-        logging.getLogger('urllib3').setLevel(CONFIG.logLevel)
+        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.' + __name__)
 
     def postToRideStats(self, payload):
         """

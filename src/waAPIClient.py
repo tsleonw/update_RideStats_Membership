@@ -20,15 +20,16 @@ class WaAPIClient:
 
     auth_endpoint = "https://oauth.wildapricot.org/auth/token"
     api_endpoint = "https://api.wildapricot.org"
-    _token = None
     _version = "v2.1"
-    logger = None
+
 
     def __init__(self, CONFIG):
+        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.'+ __name__)
         self._clientId = dotenv_values()['WA_CLIENT_ID']
         self._client_secret = dotenv_values()['WA_CLIENT_SECRET']
         self._APIKey = dotenv_values()['WA_API_KEY']
         self._client_account = dotenv_values()['WA_CLIENT_ACCOUNT']
+        self._token = None
         self._request_parms = {}
         if CONFIG.parms['filter']:
             self._request_parms["$filter"] = CONFIG.parms['filter']
@@ -40,12 +41,6 @@ class WaAPIClient:
             self._requests_parms['$top'] = CONFIG.parms['top']
         if CONFIG.parms['select']:
             self._request_parms['$select'] = CONFIG.parms['select']
-        CONFIG.logger.debug('Params = %s', str(self._request_parms))
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(CONFIG.logLevel)
-        # set the log level for the requests module too
-        logging.getLogger("requests").setLevel(CONFIG.logLevel)
-        logging.getLogger("urllib3").setLevel(CONFIG.logLevel)
 
     def authenticateWithAPIKey(self, scope=None):
         """
@@ -86,11 +81,11 @@ class WaAPIClient:
             + "/Contacts/"
         )
         response = requests.get(url, params=self._request_parms, headers=headers)
-        self.logger.info(
+        self._logger.info(
             "response from Wild Apricot API was " + str(response.status_code)
         )
-        if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug(response.text)
+        if self._logger.isEnabledFor(logging.DEBUG):
+            self._logger.debug(response.text)
         if response.status_code == 200:
             return response.json()["Contacts"]
         print("url = ", response.url)
