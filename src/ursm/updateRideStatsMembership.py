@@ -15,11 +15,12 @@ import smtplib
 import sys
 import traceback
 
-from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime
 from dotenv import dotenv_values
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from logging.handlers import TimedRotatingFileHandler
+
 
 import URSMConfig
 

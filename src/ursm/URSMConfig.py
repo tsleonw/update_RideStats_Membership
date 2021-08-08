@@ -32,7 +32,7 @@ CONFIG = {
               'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
               'Address' 'City' 'State' 'Postal code' 'Member emails and newsletters' \
               'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' 'Creation Date'  ",
-           'PostToRideStats': True
+           'PostToRideStats': False
            }
 }
 LOGGING = {

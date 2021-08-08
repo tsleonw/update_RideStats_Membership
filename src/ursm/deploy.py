@@ -19,13 +19,13 @@ from zipfile import ZipFile
 
 prodDir = "/Users/tslcw/updateRideStats"
 testDir = "deployTest"
-manifest = ["src/deploy.py",
-            "src/hbc_Member.py",
-            "src/member_Error.py",
-            "src/rideStatsClient.py",
-            "src/updateRideStatsMembership.py",
-            "src/URSMConfig.py",
-            "src/waAPIClient.py",
+manifest = ["src/ursm/deploy.py",
+            "src/ursm/hbc_Member.py",
+            "src/ursm/member_Error.py",
+            "src/ursm/rideStatsClient.py",
+            "src/ursm/updateRideStatsMembership.py",
+            "src/ursm/URSMConfig.py",
+            "src/ursm/waAPIClient.py",
             "updateRideStats.sh",
             ".env",
             ".env.sample",
@@ -33,7 +33,7 @@ manifest = ["src/deploy.py",
             '.gitignore',
             "doc/RideStatsmapping.numbers",
             "doc/readme.txt",
-            'doc/Readme.md'
+            'doc/README.md'
             ]
 
 
@@ -65,7 +65,7 @@ else:
     else:
         print("usage: 'python3 Deploy [PROD|QA]")
         exit(1)
-os.chdir("/Users/tslcw/Dropbox/Projects/UpdateRideStatsMembership")
+os.chdir("/")
 if not os.path.exists(targetDirectory):
     os.makedirs(targetDirectory)
 createZipFile(targetDirectory)
