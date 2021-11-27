@@ -42,8 +42,8 @@ class RideStatsAPI:
                 response.status_code == 202):
             return response.text
         else:
-            self._logger.info('payload = %s', payload)
-            self._logger.info('url = %s', response.url)
+            self._logger.critical('payload = %s', payload)
+            self._logger.critical('url = %s', response.url)
             self._logger.critical('Call to RideStats API return status code %d', response.status_code)
             msg = "Call to RideStats API returned status code " + str(response.status_code)
             raise Exception(msg)

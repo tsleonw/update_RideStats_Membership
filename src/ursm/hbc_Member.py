@@ -18,7 +18,7 @@ class HBCMember:
                 self._firstName = aDict["FirstName"]
                 self._lastName = aDict["LastName"]
             except KeyError as ex:
-                msg = "Error populating member first or last name" + ex.__repr__()
+                msg = f"Error populating member first or last name {ex.__repr__()}"
                 self.postError(msg, aDict, ex)
             self._email = aDict["Email"]
             self._membershipType = aDict["MembershipLevel"]["Name"]
@@ -47,12 +47,7 @@ class HBCMember:
                                 (field["Value"])[:19]
                             ).date()
                         else:
-                            msg = (
-                                self._firstName
-                                + " "
-                                + self._lastName
-                                + " does not have a valid member since date."
-                            )
+                            msg = f'{self._firstName} {self._lastName} does not have a valid member since date.'
                             self.postError(msg, aDict, None)
                 elif field["FieldName"] == "Gender":
                     if field["Value"] is not None:
@@ -62,13 +57,8 @@ class HBCMember:
                 elif field["FieldName"] == "Renewal due":
                     if self._status == "PendingNew":
                         self._renewalDue = self._memberSince + timedelta(days=30)
-                        msg = (
-                            self._firstName
-                            + " "
-                            + self._lastName
-                            + " is a pending new"
-                            + " member.  Renewal due 30 days after profile last updated."
-                        )
+                        msg = f'{self._firstName} {self._lastName} is a pending new member.\
+                         Renewal due 30 days after profile last updated'
                         self.postError(msg, aDict, None)
                     else:
                         if field["Value"]:
@@ -76,12 +66,7 @@ class HBCMember:
                                 field["Value"]
                             ).date()
                         else:
-                            msg = (
-                                self._firstName
-                                + " "
-                                + self._lastName
-                                + " does not have a valid renewal due date."
-                            )
+                            msg = f'{self._firstName} {self._lastName} does not have a valid renewal due date'
                             self.postError(msg, aDict, None)
                 elif field["FieldName"] == "Mobile Phone":
                     self._mobilePhone = self.phoneNumberFromString(field["Value"])
@@ -208,13 +193,8 @@ class HBCMember:
         """
         render a dictionary representation of a member which can then be used to create a json representation.
         """
-        aDict = {}
-        aDict["clubMemberId"] = self._memberID
-        aDict["firstName"] = self._firstName
-        aDict["lastName"] = self._lastName
-        aDict["alias"] = self._alias
-        aDict["emailAddress"] = self._email
-        aDict["gender"] = self._gender
+        aDict = {"clubMemberId": self._memberID, "firstName": self._firstName, "lastName": self._lastName,
+                 "alias": self._alias, "emailAddress": self._email, "gender": self._gender}
         if self._memberSince:
             aDict["membershipStart"] = self._memberSince.isoformat()
         else:
@@ -250,16 +230,7 @@ class HBCMember:
         """
         return a string describing the member
         """
-        aString = (
-            "Membership information for "
-            + self._firstName
-            + " "
-            + self._lastName
-            + " "
-            + "\tMember ID = "
-            + str(self._memberID)
-            + "\n"
-        )
+        aString = f'Membership information for {self._firstName} {self._lastName} \t Member Id = {self._memberID}\n'
         if self._memberError is None:
             return aString
         aString += "/tMember Record has errors"

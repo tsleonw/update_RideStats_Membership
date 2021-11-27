@@ -13,6 +13,7 @@ import logging
 import logging.config
 import smtplib
 import sys
+import time
 import traceback
 
 from datetime import datetime
@@ -74,15 +75,16 @@ class Config:
         except Exception as ex:
             print("could not initialize logging:  ", ex)
             sys.exit(1)
-        self.logger.info(msg='loaded parms for the ' + self.environment + ' environment')
+        self.logger.info(msg=f'loaded parms for the {self.environment} environment')
 
 
-def emailResults(CONFIG, startTime, rideStatsResponse, errorList):
+def emailResults(CONFIG, startTime, start, rideStatsResponse, errorList):
     """
     send an email detailing the work
     """
     server = None
     endTime = datetime.utcnow()
+    end = time.perf_counter()
     numMembers = len(memberList)
     numerrorList = len(errorList)
     url = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_URL']
@@ -90,18 +92,18 @@ def emailResults(CONFIG, startTime, rideStatsResponse, errorList):
     to_address = dotenv_values()['SMTP_TO_ADDRESS']
     password = dotenv_values()[f'{CONFIG.environment}_SMTP_PASSWORD']
 
-    msgText = "RideStatsMemberUpdate started at " + startTime.isoformat() + "\n"
-    msgText += "RideStatsMemberUpdate completed at " + endTime.isoformat() + "\n"
-    msgText += "duration was " + str(endTime - startTime) + "\n"
-    msgText += 'The RideStats URL was ' + url + '\n'
-    msgText += "There were " + str(numMembers) + " members processed.\n"
-    msgText += "There were " + str(numerrorList) + " members with errors\n"
+    msgText = f'RideStatsMemberUpdate started at {startTime.isoformat()}\n'
+    msgText += f'RideStatsMemberUpdate completed at {endTime.isoformat()}\n'
+    msgText += f'duration was {end-start}\n'
+    msgText += f'The RideStats URL was {url}\n'
+    msgText += f'There were {numMembers} members processed.\n'
+    msgText += f'There were {numerrorList} members with errors\n'
     if errorList:
         msgText += "The following records had problems:\n"
         for memberError in errorList:
-            msgText += '\t' + memberError.firstName + ' ' + memberError.lastName + "\n"
+            msgText += f'\t{memberError.firstName} {memberError.lastName}\n'
             for errorMessage in memberError.messages:
-                msgText += "\t\t" + str(errorMessage) + "\n"
+                msgText += f'\t\t{errorMessage}\n'
     msgText += "the response from RideStats was:\n"
     msgText += rideStatsResponse
     msg = MIMEMultipart()
@@ -128,6 +130,7 @@ def emailResults(CONFIG, startTime, rideStatsResponse, errorList):
 
 def main():
     startTime = datetime.utcnow()
+    start= time.perf_counter()
     CONFIG = Config()
     # start getting Wild Apricot response
     WA_API = WaAPIClient(CONFIG)
@@ -156,7 +159,7 @@ def main():
         CONFIG.logger.info("response from RideStats was %s", rideStatsResponse)
         CONFIG.logger.info('%s non-fatal errors were found', str(len(errorList)))
     # Email Results
-    emailResults(CONFIG, startTime, rideStatsResponse, errorList)
+    emailResults(CONFIG, startTime, start,  rideStatsResponse, errorList)
 
 
 def construct_RideStats_payload(CONFIG, waResponse):

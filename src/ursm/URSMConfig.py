@@ -18,7 +18,8 @@ CONFIG = {
              'select': "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due'\
               'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
               'Address' 'City' 'State' 'Postal code' 'Member emails and newsletters' \
-              'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' 'Creation Date'  ",
+              'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' \
+              'Creation Date'  ",
              'PostToRideStats': True
              },
     'QA': {'logLevel': 'DEBUG',
@@ -31,7 +32,8 @@ CONFIG = {
            'select': "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due'\
               'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
               'Address' 'City' 'State' 'Postal code' 'Member emails and newsletters' \
-              'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' 'Creation Date'  ",
+              'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' \
+              'Creation Date'  ",
            'PostToRideStats': False
            }
 }

@@ -13,6 +13,7 @@ import logging
 import requests
 from dotenv import dotenv_values
 
+
 class WaAPIClient:
     """
     encapsulate the interaction with Wild Apricot
@@ -22,9 +23,8 @@ class WaAPIClient:
     api_endpoint = "https://api.wildapricot.org"
     _version = "v2.1"
 
-
     def __init__(self, CONFIG):
-        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.'+ __name__)
+        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.' + __name__)
         self._clientId = dotenv_values()['WA_CLIENT_ID']
         self._client_secret = dotenv_values()['WA_CLIENT_SECRET']
         self._APIKey = dotenv_values()['WA_API_KEY']
@@ -38,7 +38,7 @@ class WaAPIClient:
         else:
             self._request_parms['$async'] = 'False'
         if CONFIG.parms['top'] > 0:
-            self._requests_parms['$top'] = CONFIG.parms['top']
+            self._request_parms['$top'] = CONFIG.parms['top']
         if CONFIG.parms['select']:
             self._request_parms['$select'] = CONFIG.parms['select']
 
@@ -51,7 +51,7 @@ class WaAPIClient:
         encodedKey = base64.standard_b64encode(
             ("APIKEY:" + self._APIKey).encode()
         ).decode()
-        authString = "Basic " + encodedKey
+        authString = f"Basic {encodedKey}"
         # print(authString)
         headers = {
             "ContentType": "application/x-www-form-urlencoded",
@@ -59,7 +59,6 @@ class WaAPIClient:
         }
         authResponse = requests.post(url=self.auth_endpoint, headers=headers, data=data)
         self._token = authResponse.json()["access_token"]
-        # print('token = ' + self._token)
 
     def getContacts(self):
         """
@@ -72,18 +71,10 @@ class WaAPIClient:
             "Accept": "application/json",
             "Authorization": "Bearer " + self._token,
         }
-        url = (
-            self.api_endpoint
-            + "/"
-            + self._version
-            + "/accounts/"
-            + self._client_account
-            + "/Contacts/"
-        )
+        url = f'{self.api_endpoint}/{self._version}/accounts/{self._client_account}/contacts/'
+
         response = requests.get(url, params=self._request_parms, headers=headers)
-        self._logger.info(
-            "response from Wild Apricot API was " + str(response.status_code)
-        )
+        self._logger.info(f"response from Wild Apricot API was {response.status_code}")
         if self._logger.isEnabledFor(logging.DEBUG):
             self._logger.debug(response.text)
         if response.status_code == 200:

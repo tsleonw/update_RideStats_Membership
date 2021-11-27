@@ -5,7 +5,7 @@ it can be invoked from a shell with the following command:
 
     python3 Deploy.py [PROD|QA]
 
-where "PROD" or "TEST" indicate the environment you wish to deploy.
+where "PROD" or "QA" indicate the environment you wish to deploy.
 
 This works by creating a zip file with all relevent files.  This file should be stored in Wild Apricot
 at http://www.hiawathabike.org/resources/RideStats.  Then all files listed in the manifest are copied from the current directory to either
@@ -17,8 +17,8 @@ import sys
 from shutil import copy
 from zipfile import ZipFile
 
-prodDir = "/Users/tslcw/updateRideStats"
-testDir = "deployTest"
+prodDir = "/Users/tslcw/UpdateRideStats"
+testDir = "/Users/tslcw/Dropbox/Projects/UpdateRideStatsMembership/deployTest"
 manifest = ["src/ursm/deploy.py",
             "src/ursm/hbc_Member.py",
             "src/ursm/member_Error.py",
@@ -32,8 +32,7 @@ manifest = ["src/ursm/deploy.py",
             "LICENSE",
             '.gitignore',
             "doc/RideStatsmapping.numbers",
-            "doc/readme.txt",
-            'doc/README.md'
+            'doc/README.md',
             ]
 
 
@@ -48,7 +47,7 @@ def createZipFile(target_directory):
     create a zip file of the files needed to update the membership list in rideStats.
     """
 
-    with ZipFile(target_directory + '/updateRideStats.zip', 'w') as deployZip:
+    with ZipFile(target_directory + '/UpdateRideStats.zip', 'w') as deployZip:
         deployZip.debug = 3
         for file in manifest:
             deployZip.write(file)
@@ -65,8 +64,9 @@ else:
     else:
         print("usage: 'python3 Deploy [PROD|QA]")
         exit(1)
-os.chdir("/")
+#os.chdir("/")
 if not os.path.exists(targetDirectory):
     os.makedirs(targetDirectory)
 createZipFile(targetDirectory)
-copyFiles(targetDirectory)
+# need to remember why I am copying files...
+# copyFiles(targetDirectory)
