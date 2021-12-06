@@ -1,12 +1,10 @@
 class MemberError:
     """
     container for errorList and warnings about a given member.  This will be added
-    to the errorList array and needs to print in a nice fashion
+    to the errorList array and needs to print in a nice fashion.  Maybe can be converted to a dataclass
     """
-    firstName = None
-    lastName = None
+
     exceptions = None
-    messages = None
     memberRecord = None
 
     def __init__(self,

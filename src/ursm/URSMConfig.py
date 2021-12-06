@@ -5,7 +5,8 @@ Created on Sun Jan  6 18:53:51 2019
 
 @author: tslcw
 
-used instead of a configuration file for the update rideStats program.
+used as a configuration file for the update rideStats program.  But contains no sensitive information.
+See .env.sample for an example .env file
 """
 CONFIG = {
     'PROD': {'logLevel': 'INFO',
@@ -53,11 +54,13 @@ LOGGING = {
                  'class': 'logging.handlers.TimedRotatingFileHandler',
                  'filename': 'logs/ursm.qa.log',
                  'formatter': 'verbose',
+                 'backupCount': 5,
                  },
         'PROD_file': {'level': 'INFO',
                  'class': 'logging.handlers.TimedRotatingFileHandler',
                  'filename': 'logs/ursm.log',
                  'formatter': 'verbose',
+                 'backupCount': 30,
                  },
         'console': {'level': 'DEBUG',
                     'class': 'logging.StreamHandler',

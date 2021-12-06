@@ -4,7 +4,7 @@ This module sends a request to Wild Apricot for a list of club members using
 the Wild Apricot API.  Wild Apricot returns a JSON list of members.  The module
 then validates each member.  A list of valid members is sent to RideStats,
 and an email is produced which reports the status of the run and lists any
-errorList.
+errors.
 """
 
 import argparse
