@@ -22,7 +22,7 @@ class RideStatsAPI:
     def __init__(self, CONFIG):
         self._rideStatsKey = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_KEY']
         self._rideStatsURL = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_URL']
-        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.' + __name__)
+        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.{__name__}')
 
     def postToRideStats(self, payload):
         """
@@ -44,6 +44,6 @@ class RideStatsAPI:
         else:
             self._logger.critical('payload = %s', payload)
             self._logger.critical('url = %s', response.url)
-            self._logger.critical('Call to RideStats API return status code %d', response.status_code)
-            msg = "Call to RideStats API returned status code " + str(response.status_code)
+            msg = f'Call to RideStats API returned status code {response.status_code}'
+            self._logger.critical(msg)
             raise Exception(msg)

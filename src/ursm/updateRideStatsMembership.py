@@ -130,7 +130,7 @@ def emailResults(CONFIG, startTime, start, rideStatsResponse, errorList):
 
 def main():
     startTime = datetime.utcnow()
-    start= time.perf_counter()
+    start = time.perf_counter()
     CONFIG = Config()
     # start getting Wild Apricot response
     WA_API = WaAPIClient(CONFIG)
@@ -155,8 +155,8 @@ def main():
         CONFIG.logger.debug("valid members = %s", memberList)
         CONFIG.logger.debug("errorList = %s", errorList)
     if CONFIG.logger.isEnabledFor(logging.INFO):
-        CONFIG.logger.info('%s members were successfully validated', str(len(memberList)))
-        CONFIG.logger.info("response from RideStats was %s", rideStatsResponse)
+        CONFIG.logger.info(f'{str(len(memberList))} members were successfully validated')
+        CONFIG.logger.info(f'response from RideStats was {rideStatsResponse}')
         CONFIG.logger.info('%s non-fatal errors were found', str(len(errorList)))
     # Email Results
     emailResults(CONFIG, startTime, start,  rideStatsResponse, errorList)
@@ -185,7 +185,7 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as ex:
-        traceback.print_exc()
+        traceback.print_exc(ex)
         sys.exit(1)
     finally:
         logging.shutdown()

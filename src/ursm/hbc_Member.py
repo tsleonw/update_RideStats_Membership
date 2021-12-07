@@ -25,8 +25,9 @@ class HBCMember:
             self._status = aDict["Status"]
             self._profileLastUpdated = datetime.now().date()
             """
-            remaining values are found in a single dictionary entry called 'FieldValues' 
-            that in turn contains a dictionary of fields and values.
+            remaining values are found in a single dictionary entry called
+            'FieldValues' that in turn contains a dictionary of fields and
+            values.
             """
 
             for field in aDict["FieldValues"]:
@@ -123,9 +124,10 @@ class HBCMember:
 
     def _setDefaultValues(self):
         """
-        set default values for instance variables.  Since the information in Wild Apricot may be missing fields, we
-        need to make sure that the attributes exist with default values so serialization works without checking for
-        the existence of each attribute.
+        set default values for instance variables.  Since the information
+        in Wild Apricot may be missing fields, we need to make sure that
+        the attributes exist with default values so serialization works
+        without checking for the existence of each attribute.
         """
         self._memberID = None
         self._firstName = None
@@ -162,18 +164,6 @@ class HBCMember:
         else:
             self._memberError = MemberError(aDict, msg, exception)
 
-    @staticmethod
-    def phoneNumberFromString(aString):
-        """
-        given a string, return the first 10 digits ignoring all non-numeric
-        characters
-        """
-        digits = list(filter(lambda x: x.isdigit(), aString))
-        phoneNumber = "".join(digits)
-        if len(phoneNumber) > 9:
-            phoneNumber = phoneNumber[:10]
-        return phoneNumber
-
     def isValid(self):
         """make sure that all required attributes of a member are present"""
         if (
@@ -191,10 +181,12 @@ class HBCMember:
 
     def toDict(self):
         """
-        render a dictionary representation of a member which can then be used to create a json representation.
+        render a dictionary representation of a member which can then be
+        used to create a json representation.
         """
-        aDict = {"clubMemberId": self._memberID, "firstName": self._firstName, "lastName": self._lastName,
-                 "alias": self._alias, "emailAddress": self._email, "gender": self._gender}
+        aDict = {"clubMemberId": self._memberID, "firstName": self._firstName,
+                 "lastName": self._lastName, "alias": self._alias,
+                 "emailAddress": self._email, "gender": self._gender}
         if self._memberSince:
             aDict["membershipStart"] = self._memberSince.isoformat()
         else:
@@ -230,10 +222,23 @@ class HBCMember:
         """
         return a string describing the member
         """
-        aString = f'Membership information for {self._firstName} {self._lastName} \t Member Id = {self._memberID}\n'
+        aString = (f'Membership information for {self._firstName} {self._lastName} \
+                    \t Member Id = {self._memberID}\n')
         if self._memberError is None:
             return aString
         aString += "/tMember Record has errors"
         for msg in self._memberError.messages:
             aString += "\t\t" + msg
         return aString
+
+    @staticmethod
+    def phoneNumberFromString(aString):
+        """
+        given a string, return the first 10 digits ignoring all non-numeric
+        characters
+        """
+        digits = list(filter(lambda x: x.isdigit(), aString))
+        phoneNumber = "".join(digits)
+        if len(phoneNumber) > 9:
+            phoneNumber = phoneNumber[:10]
+        return phoneNumber
