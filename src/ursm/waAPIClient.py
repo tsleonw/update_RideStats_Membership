@@ -24,12 +24,11 @@ class WaAPIClient:
     _version = "v2.1"
 
     def __init__(self, CONFIG):
-        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.' + __name__)
+        self._logger = logging.getLogger(f'{CONFIG.environment}_URSM.{__name__}')
         self._clientId = dotenv_values()['WA_CLIENT_ID']
         self._client_secret = dotenv_values()['WA_CLIENT_SECRET']
         self._APIKey = dotenv_values()['WA_API_KEY']
         self._client_account = dotenv_values()['WA_CLIENT_ACCOUNT']
-        self._token = None
         self._request_parms = {}
         if CONFIG.parms['filter']:
             self._request_parms["$filter"] = CONFIG.parms['filter']
@@ -57,23 +56,27 @@ class WaAPIClient:
             "ContentType": "application/x-www-form-urlencoded",
             "Authorization": authString,
         }
-        authResponse = requests.post(url=self.auth_endpoint, headers=headers, data=data)
-        self._token = authResponse.json()["access_token"]
+        authResponse = requests.post(url=self.auth_endpoint,
+                                     headers=headers,
+                                     data=data)
+        return authResponse.json()["access_token"]
 
     def getContacts(self):
         """
         return a list of contacts using the parms passed by the caller.
         call authenticateWithAPIKEY() first to get a new security token
         """
-        self.authenticateWithAPIKey()
+        token = self.authenticateWithAPIKey()
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer " + self._token,
+            "Authorization": "Bearer " + token,
         }
         url = f'{self.api_endpoint}/{self._version}/accounts/{self._client_account}/contacts/'
 
-        response = requests.get(url, params=self._request_parms, headers=headers)
+        response = requests.get(url,
+                                params=self._request_parms,
+                                headers=headers)
         self._logger.info(f"response from Wild Apricot API was {response.status_code}")
         if self._logger.isEnabledFor(logging.DEBUG):
             self._logger.debug(response.text)
