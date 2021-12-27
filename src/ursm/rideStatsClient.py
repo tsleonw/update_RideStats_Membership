@@ -35,15 +35,16 @@ class RideStatsAPI:
         response = requests.post(headers=headers,
                                  url=self._rideStatsURL,
                                  json=payload)
-        self._logger.info("RideStats Webs Service returns status code %s",
-                          response.status_code)
-        self._logger.info("RideStats response = %s", response.text)
+        self._logger.info(f"RideStats Webs Service returned status code \
+            {response.status_code}")
+        self._logger.info(f"RideStats response = {response.text}")
         if (response.status_code == 200 or
                 response.status_code == 202):
             return response.text
         else:
-            self._logger.critical('payload = %s', payload)
-            self._logger.critical('url = %s', response.url)
-            msg = f'Call to RideStats API returned status code {response.status_code}'
+            self._logger.critical(f'payload = {payload}')
+            self._logger.critical(f'url = {respones.url}')
+            msg = f'Call to RideStats API returned status code \
+                {response.status_code}'
             self._logger.critical(msg)
             raise Exception(msg)

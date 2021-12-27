@@ -79,8 +79,8 @@ class WaAPIClient:
                                 headers=headers)
         self._logger.info(f"response from Wild Apricot API was {response.status_code}")
         if self._logger.isEnabledFor(logging.DEBUG):
-            self._logger.debug(response.text)
+            self._logger.debug(f'WA Payload = {response.text}')
         if response.status_code == 200:
             return response.json()["Contacts"]
         print("url = ", response.url)
-        raise Exception("Call to WA API returned status code", response.status_code)
+        raise Exception(f"Call to WA API returned status code {response.status_code}")
