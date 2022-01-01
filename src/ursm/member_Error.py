@@ -29,3 +29,12 @@ class MemberError:
                 self.exceptions.append(exception)
             else:
                 self.exceptions = [exception]
+
+    def __str__(self):
+        error_string = ''
+        for msg in self.messages:
+            error_string = error_string + msg + '\n'
+        return error_string
+
+    def __repr__(self):
+        return self.__str__()

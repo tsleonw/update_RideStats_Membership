@@ -101,9 +101,8 @@ def emailResults(CONFIG, startTime, start, rideStatsResponse, errorList):
     if errorList:
         msgText += "The following records had problems:\n"
         for memberError in errorList:
-            msgText += f'\t{memberError.firstName} {memberError.lastName}\n'
             for errorMessage in memberError.messages:
-                msgText += f'\t\t{errorMessage}\n'
+                msgText += f'{errorMessage}\n'
     msgText += "the response from RideStats was:\n"
     msgText += rideStatsResponse
     msg = MIMEMultipart()
@@ -175,8 +174,7 @@ def construct_RideStats_payload(CONFIG, waResponse):
         if member.isValid():
             memberList.append(member.toDict())
         else:
-            CONFIG.logger.error(msg="invalid member record: "
-                                    + member.str())
+            CONFIG.logger.error(msg = f'invalid member record: {member} ')
     payload["memberships"] = memberList
     return payload, errorList
 

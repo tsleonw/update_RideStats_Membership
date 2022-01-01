@@ -23,7 +23,10 @@ class HBCMember:
             self._email = aDict["Email"]
             self._membershipType = aDict["MembershipLevel"]["Name"]
             self._status = aDict["Status"]
-            self._profileLastUpdated = datetime.now().date()
+            if aDict.get('ProfileLastUpdated', None):
+                self._profileLastUpdated = datetime.fromisoformat(aDict['ProfileLastUpdated'][:19])
+            else:
+                self._profileLastUpdated = None
             """
             remaining values are found in a single dictionary entry called
             'FieldValues' that in turn contains a dictionary of fields and
@@ -82,7 +85,19 @@ class HBCMember:
                 elif field["FieldName"] == "City":
                     self._city = field["Value"]
                 elif field["FieldName"] == "State":
-                    self._state = field["Value"]
+                    state_string = field['Value'].lower()
+                    if state_string[:4] in {'mn', 'minn', }:
+                        self._state = 'MN'
+                    elif state_string[:4] in{'wi', 'wisc',}:
+                        self._state = 'WI'
+                    elif state_string in {'az', 'arizona'}:
+                        self._state = 'AZ'
+                    elif state_string in {'tx', 'texas'}:
+                        self._state = 'TX'
+                    else:
+                        self._state = 'MN'
+                        msg = f'{self._firstName} {self._lastName} does not have a valid state.  State is {state_string}'
+                        self.postError(msg, aDict, None)
                 elif field["FieldName"] == "Postal Code":
                     self._zipCode = field["Value"]
                 elif field["FieldName"] == "Emergency Contact":
@@ -97,7 +112,9 @@ class HBCMember:
                               ' does not have an emergency contact phone number.'
                         self.postError(msg, aDict, None)"""
 
-                elif field["FieldName"] == "Birthday":
+                elif field["FieldName"] == "Birthday" and self._birthDate == None:
+                    self._birthDate = field["Value"]
+                elif field["FieldName"] == "Birthdate:":
                     self._birthDate = field["Value"]
                 elif field["FieldName"] == "Group participation":
                     if field["Value"]:
@@ -140,8 +157,9 @@ class HBCMember:
         self._telephone = None
         self._address = None
         self._city = None
-        self._state = None
+        self._state = 'MN'
         self._zipCode = None
+        self._country = 'USA'
         self._membershipType = None
         self._isRideLeader = False
         self._memberSince = None
@@ -152,6 +170,7 @@ class HBCMember:
         self._isValid = True
         self._emergencyContact = None
         self._emergencyContactPhone = None
+        self._bicycleType = 'SINGLE'
         self._memberError = None
 
     def postError(self, msg, aDict, exception):
@@ -184,9 +203,11 @@ class HBCMember:
         render a dictionary representation of a member which can then be
         used to create a json representation.
         """
-        aDict = {"clubMemberId": self._memberID, "firstName": self._firstName,
-                 "lastName": self._lastName, "alias": self._alias,
-                 "emailAddress": self._email, "gender": self._gender}
+        aDict = {"clubMemberId": self._memberID,
+                 "firstName": self._firstName,
+                 "lastName": self._lastName,
+                 "emailAddress": self._email,
+                 "gender": self._gender,}
         if self._memberSince:
             aDict["membershipStart"] = self._memberSince.isoformat()
         else:
@@ -195,7 +216,7 @@ class HBCMember:
             aDict["membershipEnd"] = self._renewalDue.isoformat()
         else:
             aDict["membershipEnd"] = None
-        aDict["membershipType"] = self._membershipType
+        # aDict["membershipType"] = self._membershipType
         aDict["phone1"] = self._mobilePhone
         aDict["phone2"] = self._telephone
         if self._isRideLeader:
@@ -211,11 +232,13 @@ class HBCMember:
         aDict["address"] = self._address
         aDict["city"] = self._city
         aDict["state"] = self._state
+        aDict['country'] = self._country
         if self._zipCode:
             aDict["zipCode"] = self._zipCode
         else:
             aDict["zipCode"] = ""
-        aDict['userLastModified'] = self._profileLastUpdated.isoformat()
+        aDict['bicycleType'] = self._bicycleType
+        #aDict['userLastModified'] = self._profileLastUpdated.isoformat()
         return aDict
 
     def __str__(self):
