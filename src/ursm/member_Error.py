@@ -6,18 +6,18 @@ class MemberError:
     """
 
     exceptions = None
-    memberRecord = None
 
     def __init__(self,
                  memberRecord,
                  msg,
                  exception=None):
-        self.firstName = memberRecord['FirstName']
-        self.lastName = memberRecord['LastName']
-        self.memberRecord = memberRecord
+        self._firstName = memberRecord['FirstName']
+        self._lastName = memberRecord['LastName']
         self.messages = [msg]
         if exception:
             self.exceptions = [exception]
+
+
 
     def addErrorRecord(self, msg, exception=None):
         """

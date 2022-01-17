@@ -17,7 +17,7 @@ CONFIG = {
              'top': 0,
              'async': False,
              'select': "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due'\
-              'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
+              'Membership Status' 'Group Participation' 'Mobile Phone' 'Home Phone'\
               'Address' 'City' 'State' 'Postal code' 'Member emails and newsletters' \
               'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' \
               'Creation Date' 'Country'  ",
@@ -29,11 +29,11 @@ CONFIG = {
            'top': 0,
            'async': False,
            'select': "'User ID' 'Alias' 'Gender' 'Member Since' 'Renewal Due'\
-              'Membership Status' 'Group Participation' 'Mobile Phone' 'Telephone'\
+              'Membership Status' 'Group Participation' 'Mobile Phone' 'Home Phone'\
               'Address' 'City' 'State' 'Postal code' 'Member emails and newsletters' \
               'Emergency Contact' 'Emergency Contact Phone'  'Birthday' 'Birthdate' \
               'Creation Date' 'Country' ",
-           'PostToRideStats': False
+           'PostToRideStats': True,
            }
 }
 LOGGING = {
@@ -53,12 +53,12 @@ LOGGING = {
                     'formatter': 'verbose',
                     'when': 'M',
                     'backupCount': 10,
-                   },
+                    },
         'PROD_file': {'class': 'logging.handlers.TimedRotatingFileHandler',
-                 'filename': 'logs/ursm.log',
-                 'formatter': 'verbose',
-                 'backupCount': 30,
-                 },
+                      'filename': 'logs/ursm.log',
+                      'formatter': 'verbose',
+                      'backupCount': 30,
+                      },
         'console': {'class': 'logging.StreamHandler',
                     'formatter': 'simple',
                     'stream': 'ext://sys.stdout',

@@ -2,6 +2,8 @@
 __pycache__/
 *.json
 logs/
+tests/*.txt
+tests/inputData.py
 *.pyc
 *.zip
 deployTest/

@@ -1,259 +1,208 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from member_Error import MemberError
 
 
 class HBCMember:
-    """
-    HBCMember represents a member of the club in Wild Apricot
-    """
+    
+    def __init__(self, WA_Response):
+        """
+        store first and last name as member attributes to make referencing them 
+        for error messages easier.
+        """
+        self.memberErrors = None
+        self.first_name = WA_Response['FirstName']
+        self.last_name = WA_Response['LastName']
+        self.email = WA_Response['Email']
+        self.membershipType = WA_Response['MembershipLevel']['Name']
+        self.status = WA_Response['Status']
+        self.member_ID = WA_Response['Id']
+        if WA_Response.get('ProfileLastUpdated', None):
+            self.profile_last_updated = WA_Response['ProfileLastUpdated'][:10]
+        else:
+            self.profile_last_updated = None
+        self.member_since = None
+        self.creation_date = None
+        self.renewal_due = None
+        self.mobile_Phone = '(212) 999-9999'
+        # need to set this so can check when deciding to use 'birthday' or birthdate
+        self.birthDate = ''
+        self.is_RideLeader = False
+        self.bicycle_type = 'SINGLE'
+        """
+        remaining values are in a list of "FieldValues".  each item in the list has
+        a 'fieldName' which indicates which field it is, a 'Value' which contains the value of the field.
+        the item also contains a 'systemCode' and may contain other items which are not relevent
+        """
+        for field in WA_Response['FieldValues']:
+            if field['FieldName'] == 'Member since':
+                if field['Value']:
+                    self.member_since = field['Value'][:10]
+                else:
+                    msg = f'{self.first_name} {self.last_name} has no Member since date'
+                    self.postError(msg)
+            elif field['FieldName'] == 'Creation date':
+                if field['Value']:
+                    self.creation_date = field['Value'][:10]
+                else:
+                    msg = f'{self.first_name} {self.last_name} has no creation date'
+                    self.postError(msg, WA_Response)
+            elif field['FieldName'] == 'Gender':
+                if field['Value']:
+                    self.gender = field['Value']['Label'].upper()
+                else:
+                    self.gender = 'NEUTRAL'
+            elif field['FieldName'] == 'Renewal due':
+                if field['Value']:
+                    self.renewal_due = field['Value'][:10]
+                else:
+                    msg = f'{self.first_name} {self.last_name} doesnt not have a renewal due date'
+                    self.postError(msg)
+            elif field['FieldName'] == 'Mobile Phone':
+                if field['Value']:
+                    self.mobile_Phone = self.phoneNumberFromString(field['Value'])
+                else:
+                    self.mobile_Phone = '(212) 999-9999'
+            elif field['FieldName'] == 'Home Phone':
+                if field['Value']:
+                    self.home_phone = self.phoneNumberFromString(field['Value'])
+                else:
+                    self.home_phone = ''
+            elif field['SystemCode'] == 'ReceiveNewsletters':
+                self.receive_newsLetter = field['Value']
+            elif field['FieldName'] == 'Address':
+                self.address = field['Value']
+            elif field['FieldName'] == 'City':
+                self.city = field['Value']
+            elif field['FieldName'] == 'State':
+                state_string = field['Value'].lower()
+                if state_string[:4] in {'mn', 'minn', }:
+                    self.state = 'MN'
+                elif state_string[:4] in {'wi', 'wisc', }:
+                    self.state = 'WI'
+                elif state_string in {'az', 'arizona'}:
+                    self.state = 'AZ'
+                elif state_string in {'tx', 'texas'}:
+                    self.state = 'TX'
+                else:
+                    self.state = 'MN'
+                    msg = f'{self.first_name} {self.last_name} does not have a valid state.'
+                    self.postError(msg)
+            elif field['FieldName'] == 'Postal Code':
+                self.postal_code = field['Value']
+            elif field['FieldName'] == 'Country':
+                if len(field['Value']) == 3:
+                    self.country = field['Value']
+                else:
+                    self.country = 'USA'
+            elif field['FieldName'] == 'Emergency Contact':
+                self.emergency_contact = field['Value']
+            elif field["FieldName"] == "Emergency Contact Phone":
+                self.emergencyContactPhone = self.phoneNumberFromString(field["Value"])
+            elif field["FieldName"] == "Birthday" and (self.birthDate == ''):
+                if field['Value']:
+                    self.birthDate = field["Value"]
+            elif field["FieldName"] == "Birthdate":
+                if field['Value']:
+                    self.birthDate = field["Value"][:10]
+            elif field["FieldName"] == "Group participation":
+                if field["Value"]:
+                    for group in field["Value"]:
+                        if group["Label"] == "Ride Leader":
+                            self.is_RideLeader = True
+            elif field["FieldName"] == "Creation Date":
+                self._creationDate = (field["Value"][:10])
 
-    def __init__(self, aDict):
-        """
-        construct a member object from a dictionary.
-        """
-        self._setDefaultValues()
-        try:
-            try:
-                self._firstName = aDict["FirstName"]
-                self._lastName = aDict["LastName"]
-            except KeyError as ex:
-                msg = f"Error populating member first or last name {ex.__repr__()}"
-                self.postError(msg, aDict, ex)
-            self._email = aDict["Email"]
-            self._membershipType = aDict["MembershipLevel"]["Name"]
-            self._status = aDict["Status"]
-            if aDict.get('ProfileLastUpdated', None):
-                self._profileLastUpdated = datetime.fromisoformat(aDict['ProfileLastUpdated'][:19])
+        # Now that the member is populated, check for missing dates.
+        self.calculate_missing_dates()
+
+    def calculate_missing_dates(self):
+        if self.member_since is None:
+            if self.creation_date:
+                self.member_since = self.creation_date
             else:
-                self._profileLastUpdated = None
-            """
-            remaining values are found in a single dictionary entry called
-            'FieldValues' that in turn contains a dictionary of fields and
-            values.
-            """
-
-            for field in aDict["FieldValues"]:
-                if field["FieldName"] == "Member since":
-                    if self._status == "PendingNew":
-                        self._memberSince = self._profileLastUpdated
-                        msg = (
-                            self._firstName
-                            + " "
-                            + self._lastName
-                            + " is a pending new"
-                            + " member.  using profile last updated date as memberSince."
-                        )
-                        self.postError(msg, aDict, None)
-                    else:
-                        if field["Value"]:
-                            self._memberSince = datetime.fromisoformat(
-                                (field["Value"])[:19]
-                            ).date()
-                        else:
-                            msg = f'{self._firstName} {self._lastName} does not have a valid member since date.'
-                            self.postError(msg, aDict, None)
-                elif field["FieldName"] == "Gender":
-                    if field["Value"] is not None:
-                        self._gender = field["Value"]["Label"]
-                    else:
-                        self._gender = "Neutral"
-                elif field["FieldName"] == "Renewal due":
-                    if self._status == "PendingNew":
-                        self._renewalDue = self._memberSince + timedelta(days=30)
-                        msg = f'{self._firstName} {self._lastName} is a pending new member.\
-                         Renewal due 30 days after profile last updated'
-                        self.postError(msg, aDict, None)
-                    else:
-                        if field["Value"]:
-                            self._renewalDue = datetime.fromisoformat(
-                                field["Value"]
-                            ).date()
-                        else:
-                            msg = f'{self._firstName} {self._lastName} does not have a valid renewal due date'
-                            self.postError(msg, aDict, None)
-                elif field["FieldName"] == "Mobile Phone":
-                    self._mobilePhone = self.phoneNumberFromString(field["Value"])
-                elif field["FieldName"] == "Telephone":
-                    self._telephone = self.phoneNumberFromString(field["Value"])
-                elif field["FieldName"] == "User ID":
-                    self._memberID = field["Value"]
-                elif field["FieldName"] == "Alias":
-                    self._alias = field["Value"]
-                elif field["FieldName"] == "Address":
-                    self._address = field["Value"]
-                elif field["FieldName"] == "City":
-                    self._city = field["Value"]
-                elif field["FieldName"] == "State":
-                    state_string = field['Value'].lower()
-                    if state_string[:4] in {'mn', 'minn', }:
-                        self._state = 'MN'
-                    elif state_string[:4] in{'wi', 'wisc',}:
-                        self._state = 'WI'
-                    elif state_string in {'az', 'arizona'}:
-                        self._state = 'AZ'
-                    elif state_string in {'tx', 'texas'}:
-                        self._state = 'TX'
-                    else:
-                        self._state = 'MN'
-                        msg = f'{self._firstName} {self._lastName} does not have a valid state.  State is {state_string}'
-                        self.postError(msg, aDict, None)
-                elif field["FieldName"] == "Postal Code":
-                    self._zipCode = field["Value"]
-                elif field["FieldName"] == "Emergency Contact":
-                    self._emergencyContact = field["Value"]
-                elif field["FieldName"] == "Emergency Contact Phone":
-                    self._emergencyContactPhone = self.phoneNumberFromString(
-                        field["Value"]
-                    )
-                    """if (self.emergencyContactPhone == '' or
-                            self.emergencyContactPhone is None):
-                        msg = self.firstName + ' ' + self.lastName + \
-                              ' does not have an emergency contact phone number.'
-                        self.postError(msg, aDict, None)"""
-
-                elif field["FieldName"] == "Birthday" and self._birthDate == None:
-                    self._birthDate = field["Value"]
-                elif field["FieldName"] == "Birthdate:":
-                    self._birthDate = field["Value"]
-                elif field["FieldName"] == "Group participation":
-                    if field["Value"]:
-                        for group in field["Value"]:
-                            if group["Label"] == "Ride Leader":
-                                self._isRideLeader = True
-                elif field["FieldName"] == "Creation Date":
-                    self._creationDate = datetime.fromisoformat(
-                        field["Value"][:19]
-                    ).date()
-                    print(self._creationDate)
-        except Exception as ex:
-            msg = "Other error in member.__init__() " + ex.__repr__()
-            self.postError(msg, aDict, ex)
-
-    @property
-    def memberError(self):
-        """memberError is a list of errors relating to a member"""
-        return self._memberError
-
-    @memberError.setter
-    def memberError(self, memberError):
-        raise AttributeError("can't set memberError")
-
-    def _setDefaultValues(self):
+                if self.profile_last_updated:
+                    self.member_since = self.profile_last_updated
+                else:
+                    self.member_since = date.today().isoformat()
+                    msg = f'Could not calculate member_since for {self.first_name} {self.last_name}. Using todays date.'
+                    self.postError(msg)
+        if self.renewal_due is None:
+            self.renewal_due = date.fromisoformat(self.member_since) + timedelta(days=30)
+            if self.renewal_due < datetime.date(datetime.today()):
+                self.renewal_due = datetime.date(datetime.today()) + timedelta(days=30)
+            self.renewal_due = self.renewal_due.isoformat()
+            msg = f'calculated renewal date for {self.first_name} {self.last_name} is {self.renewal_due}'
+            self.postError(msg)
+                
+    def postError(self, msg, exception=None):
         """
-        set default values for instance variables.  Since the information
-        in Wild Apricot may be missing fields, we need to make sure that
-        the attributes exist with default values so serialization works
-        without checking for the existence of each attribute.
-        """
-        self._memberID = None
-        self._firstName = None
-        self._lastName = None
-        self._birthDate = None
-        self._alias = None
-        self._email = None
-        self._status = None
-        self._mobilePhone = None
-        self._telephone = None
-        self._address = None
-        self._city = None
-        self._state = 'MN'
-        self._zipCode = None
-        self._country = 'USA'
-        self._membershipType = None
-        self._isRideLeader = False
-        self._memberSince = None
-        self._creationDate = None
-        self._renewalDue = None
-        self._profileLastUpdated = None
-        self._gender = None
-        self._isValid = True
-        self._emergencyContact = None
-        self._emergencyContactPhone = None
-        self._bicycleType = 'SINGLE'
-        self._memberError = None
-
-    def postError(self, msg, aDict, exception):
-        """
-        add an error to the members error list.  If there is no error list,
+        add an error to the member's error list.  If there is no error list,
         create one.
         """
-        if self._memberError:
-            self._memberError.addErrorRecord(msg, exception)
+        if self.memberErrors:
+            self.memberErrors.addErrorRecord(msg, exception)
         else:
-            self._memberError = MemberError(aDict, msg, exception)
+            member_name = {'FirstName': self.first_name, 'LastName': self.last_name}
+            self.memberErrors = MemberError(member_name, msg, exception)
 
     def isValid(self):
         """make sure that all required attributes of a member are present"""
         if (
-            self._memberID is None
-            or self._firstName is None
-            or self._lastName is None
-            or self._email is None
-            or self._memberSince is None
-            or self._renewalDue is None
-            or self._renewalDue < self._memberSince
+            self.member_ID is None
+            or self.first_name is None
+            or self.last_name is None
+            or self.email is None
+            or self.member_since is None
+            or self.renewal_due is None
+            or self.renewal_due < self.member_since
         ):
             return False
         else:
             return True
 
-    def toDict(self):
+    def to_dict(self):
         """
-        render a dictionary representation of a member which can then be
-        used to create a json representation.
+        construct a dictionary that can be used to send to RideStats
+        :return: dictionary
         """
-        aDict = {"clubMemberId": self._memberID,
-                 "firstName": self._firstName,
-                 "lastName": self._lastName,
-                 "emailAddress": self._email,
-                 "gender": self._gender,}
-        if self._memberSince:
-            aDict["membershipStart"] = self._memberSince.isoformat()
-        else:
-            aDict["membershipStart"] = None
-        if self._renewalDue:
-            aDict["membershipEnd"] = self._renewalDue.isoformat()
-        else:
-            aDict["membershipEnd"] = None
-        # aDict["membershipType"] = self._membershipType
-        aDict["phone1"] = self._mobilePhone
-        aDict["phone2"] = self._telephone
-        if self._isRideLeader:
-            aDict["rideLeader"] = True
-        else:
-            aDict["rideLeader"] = False
-        aDict["emergencyContactName"] = self._emergencyContact
-        aDict["emergencyContactPhone"] = self._emergencyContactPhone
-        if self._birthDate:
-            aDict["birthDate"] = self._birthDate
-        else:
-            aDict["birthDate"] = ""
-        aDict["address"] = self._address
-        aDict["city"] = self._city
-        aDict["state"] = self._state
-        aDict['country'] = self._country
-        if self._zipCode:
-            aDict["zipCode"] = self._zipCode
-        else:
-            aDict["zipCode"] = ""
-        aDict['bicycleType'] = self._bicycleType
-        #aDict['userLastModified'] = self._profileLastUpdated.isoformat()
-        return aDict
+        RS_dict = {}
+        RS_dict['clubMemberId'] = self.member_ID
+        RS_dict['firstName'] = self.first_name
+        RS_dict['lastName'] = self.last_name
+        RS_dict['emailAddress'] = self.email
+        RS_dict['gender'] = self.gender
+        RS_dict['membershipType'] = self.membershipType.upper()
+        RS_dict['membershipStart'] = self.member_since
+        RS_dict['membershipEnd'] = self.renewal_due
+        RS_dict['phone1'] = self.mobile_Phone
+        RS_dict['phone2'] = self.home_phone
+        RS_dict['rideLeader'] = self.is_RideLeader
+        RS_dict['emergencyContactName'] = self.emergency_contact
+        RS_dict['emergencyContactPhone'] = self.emergencyContactPhone
+        RS_dict['birthDate'] = self.birthDate
+        RS_dict['address'] = self.address
+        RS_dict['city'] = self.city
+        RS_dict['state'] = self.state
+        RS_dict['country'] = self.country
+        RS_dict['zipcode'] = self.postal_code
+        RS_dict['bicycleType'] = self.bicycle_type
+        RS_dict['ReceiveNewsLetter'] = self.receive_newsLetter
+        return RS_dict
 
     def __str__(self):
         """
         return a string describing the member
         """
-        aString = (f'Membership information for {self._firstName} {self._lastName} \
-                    \t Member Id = {self._memberID}\n')
-        if self._memberError is None:
+        aString = (f'Membership information for {self.first_name} {self.last_name} \
+                    \t Member Id = {self.member_ID}\n')
+        if self.memberErrors is None:
             return aString
         aString += "/tMember Record has errors"
-        for msg in self._memberError.messages:
+        for msg in self.memberErrors.messages:
             aString += "\t\t" + msg
-        return aString
-
+        return aString    
+    
     @staticmethod
     def phoneNumberFromString(aString):
         """
@@ -262,6 +211,12 @@ class HBCMember:
         """
         digits = list(filter(lambda x: x.isdigit(), aString))
         phoneNumber = "".join(digits)
-        if len(phoneNumber) > 9:
+        if len(phoneNumber) < 7:
+            return ''
+        if len(phoneNumber) > 10:
             phoneNumber = phoneNumber[:10]
+        if len(phoneNumber) == 7:
+            phoneNumber = f'{phoneNumber[:3]}-{phoneNumber[3:7]}'
+        elif len(phoneNumber) == 10:
+            phoneNumber = f'({phoneNumber[:3]}) {phoneNumber[3:6]}-{phoneNumber[6:]}'
         return phoneNumber

@@ -41,5 +41,5 @@ In order to use this program you need to do the following:
 8. modify the updateRideStats.sh file to make sure that all directory references are accurate
 9. create an entry in the crontab file to execute the updateRideStats.sh file at the time of your choosing.  Here is the entry I am using:
 ```
-	0 0* * * * cd ~/updateRideStats && ./updateRideStats.sh
+	0 0* * * * cd ~/UpdateRideStats && ./updateRideStats.sh
 ```

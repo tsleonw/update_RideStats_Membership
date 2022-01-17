@@ -78,15 +78,15 @@ class Config:
         self.logger.info(msg=f'loaded parms for the {self.environment} environment')
 
 
-def emailResults(CONFIG, startTime, start, rideStatsResponse, errorList):
+def emailResults(CONFIG, startTime, start, rideStatsResponse, members, errors):
     """
     send an email detailing the work
     """
     server = None
     endTime = datetime.utcnow()
     end = time.perf_counter()
-    numMembers = len(memberList)
-    numerrorList = len(errorList)
+    num_members = len(members)
+    num_errors = len(errors)
     url = dotenv_values()[f'{CONFIG.environment}_RIDESTATS_URL']
     from_address = dotenv_values()[f'{CONFIG.environment}_SMTP_FROM_ADDRESS']
     to_address = dotenv_values()['SMTP_TO_ADDRESS']
@@ -96,11 +96,11 @@ def emailResults(CONFIG, startTime, start, rideStatsResponse, errorList):
     msgText += f'RideStatsMemberUpdate completed at {endTime.isoformat()}\n'
     msgText += f'duration was {end-start}\n'
     msgText += f'The RideStats URL was {url}\n'
-    msgText += f'There were {numMembers} members processed.\n'
-    msgText += f'There were {numerrorList} members with errors\n'
-    if errorList:
+    msgText += f'There were {num_members} members processed.\n'
+    msgText += f'There were {num_errors} members with errors\n'
+    if errors:
         msgText += "The following records had problems:\n"
-        for memberError in errorList:
+        for memberError in errors:
             for errorMessage in memberError.messages:
                 msgText += f'{errorMessage}\n'
     msgText += "the response from RideStats was:\n"
@@ -134,9 +134,14 @@ def main():
     # start getting Wild Apricot response
     WA_API = WaAPIClient(CONFIG)
     waResponse = WA_API.getContacts()
+    if CONFIG.logger.isEnabledFor(logging.DEBUG):
+        CONFIG.logger.debug(f'WildApricot Response = \n')
+        CONFIG.logger.debug('================================')
+        CONFIG.logger.debug(waResponse)
+        CONFIG.logger.debug('================================\n\n')
     # End getting Wild Apricot Response
     # Start Constructing RideStats POST
-    payload, errorList = construct_RideStats_payload(CONFIG, waResponse)
+    payload, errors = construct_RideStats_payload(CONFIG, waResponse)
     # End Constructing RideStats POST
     # Post to RideStats or write to file
     if CONFIG.parms['PostToRideStats']:
@@ -151,39 +156,40 @@ def main():
     # End post to RideStats or File
     # Log results
     if CONFIG.logger.isEnabledFor(logging.DEBUG):
-        CONFIG.logger.debug("valid members = %s", memberList)
-        CONFIG.logger.debug("errorList = %s", errorList)
+        CONFIG.logger.debug("valid members = %s", payload['memberships'])
+        CONFIG.logger.debug("errorList = %s", errors)
     if CONFIG.logger.isEnabledFor(logging.INFO):
-        CONFIG.logger.info(f'{str(len(memberList))} members were successfully validated')
+        CONFIG.logger.info(f'{str(len(payload["memberships"]))} members were successfully validated')
         CONFIG.logger.info(f'response from RideStats was {rideStatsResponse}')
-        CONFIG.logger.info('%s non-fatal errors were found', str(len(errorList)))
+        CONFIG.logger.info('%s non-fatal errors were found', str(len(errors)))
     # Email Results
-    emailResults(CONFIG, startTime, start,  rideStatsResponse, errorList)
+    emailResults(CONFIG, startTime, start,  rideStatsResponse, payload['memberships'], errors)
 
 
 def construct_RideStats_payload(CONFIG, waResponse):
-    global memberList, errorList
-    memberList = []
-    errorList = []
+    members = []
+    errors = []
     CLUB_ID = dotenv_values()['RIDESTATS_CLUB_ID']
     payload = {"clubId": CLUB_ID}
     for each in waResponse:
         member = HBCMember(each)
-        if member.memberError:
-            errorList.append(member.memberError)
+        if member.memberErrors:
+            errors.append(member.memberErrors)
+            for errorMessage in member.memberErrors.messages:
+                CONFIG.logger.error(msg=errorMessage)
         if member.isValid():
-            memberList.append(member.toDict())
+            members.append(member.to_dict())
         else:
-            CONFIG.logger.error(msg = f'invalid member record: {member} ')
-    payload["memberships"] = memberList
-    return payload, errorList
+            CONFIG.logger.error(msg=f'invalid member record: {member} ')
+    payload["memberships"] = members
+    return payload, errors
 
 
 if __name__ == "__main__":
     try:
         main()
-    except Exception as ex:
-        traceback.print_exc(ex)
+    except Exception as e:
+        traceback.print_exc(e)
         sys.exit(1)
     finally:
         logging.shutdown()
