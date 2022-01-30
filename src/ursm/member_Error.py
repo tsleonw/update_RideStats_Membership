@@ -3,6 +3,12 @@ class MemberError:
     container for errorList and warnings about a given member.
     This will be added to the errorList array and needs to print in a nice
     fashion.  Maybe can be converted to a dataclass at somepoint.
+
+    Created on Sat Jan  5 11:37:44 2019
+
+    @author: Leon Webster
+
+    ©2022, RideStats, LLC..
     """
 
     exceptions = None

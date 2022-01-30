@@ -5,6 +5,12 @@ the Wild Apricot API.  Wild Apricot returns a JSON list of members.  The module
 then validates each member.  A list of valid members is sent to RideStats,
 and an email is produced which reports the status of the run and lists any
 errors.
+
+Created on Sat Jan  5 11:37:44 2019
+
+@author: Leon Webster
+
+©2022, RideStats, LLC.
 """
 
 import argparse
@@ -15,16 +21,13 @@ import smtplib
 import sys
 import time
 import traceback
-
 from datetime import datetime
 from dotenv import dotenv_values
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from logging.handlers import TimedRotatingFileHandler
 
-
 import URSMConfig
-
 from hbc_Member import HBCMember
 from rideStatsClient import RideStatsAPI
 from waAPIClient import WaAPIClient
@@ -142,8 +145,8 @@ def main():
     # End getting Wild Apricot Response
     # Start Constructing RideStats POST
     payload, errors = construct_RideStats_payload(CONFIG, waResponse)
-    # End Constructing RideStats POST
-    # Post to RideStats or write to file
+    # End Constructing POST
+    # Send to RideStats or write to file
     if CONFIG.parms['PostToRideStats']:
         RIDESTATS_API = RideStatsAPI(CONFIG)
         rideStatsResponse = RIDESTATS_API.postToRideStats(payload)

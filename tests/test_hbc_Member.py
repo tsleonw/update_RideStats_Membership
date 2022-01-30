@@ -1,3 +1,10 @@
+"""
+Tests for HBCMember class.
+Run using Pytest module
+
+@author Leon Webster
+©2022, RideStats LLC.
+"""
 from src.ursm.hbc_Member import HBCMember
 from datetime import datetime, timedelta
 

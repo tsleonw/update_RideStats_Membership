@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """
+Encapsulate the RideStats API
 Created on Sat Jan  5 11:37:44 2019
 
-@author: tslcw
+@author: Leon Webster
+
+©2022, RideStats, LLC.
 """
 
 

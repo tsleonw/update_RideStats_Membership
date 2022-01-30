@@ -1,13 +1,24 @@
+"""
+HBC Member represents a membership record for Hiawatha Bicycling Club.
+used to construct a dictionary which, when converted to JSON will populate a
+membership record in RideStats.
+
+Created on Sat Jan  5 11:37:44 2019
+
+@author: Leon Webster
+
+© 2022, RideStats, LLC.
+"""
 from datetime import date, datetime, timedelta
 
 from member_Error import MemberError
 
 
 class HBCMember:
-    
+
     def __init__(self, WA_Response):
         """
-        store first and last name as member attributes to make referencing them 
+        store first and last name as member attributes to make referencing them
         for error messages easier.
         """
         self.memberErrors = None
@@ -32,7 +43,7 @@ class HBCMember:
         """
         remaining values are in a list of "FieldValues".  each item in the list has
         a 'fieldName' which indicates which field it is, a 'Value' which contains the value of the field.
-        the item also contains a 'systemCode' and may contain other items which are not relevent
+        the item also contains a 'systemCode' and may contain other items which are not relevant
         """
         for field in WA_Response['FieldValues']:
             if field['FieldName'] == 'Member since':
@@ -125,7 +136,7 @@ class HBCMember:
                     self.member_since = self.profile_last_updated
                 else:
                     self.member_since = date.today().isoformat()
-                    msg = f'Could not calculate member_since for {self.first_name} {self.last_name}. Using todays date.'
+                    msg = f'Could not calculate member_since for {self.first_name} {self.last_name}. Using today\'s date.'
                     self.postError(msg)
         if self.renewal_due is None:
             self.renewal_due = date.fromisoformat(self.member_since) + timedelta(days=30)
@@ -134,7 +145,7 @@ class HBCMember:
             self.renewal_due = self.renewal_due.isoformat()
             msg = f'calculated renewal date for {self.first_name} {self.last_name} is {self.renewal_due}'
             self.postError(msg)
-                
+
     def postError(self, msg, exception=None):
         """
         add an error to the member's error list.  If there is no error list,
@@ -201,8 +212,8 @@ class HBCMember:
         aString += "/tMember Record has errors"
         for msg in self.memberErrors.messages:
             aString += "\t\t" + msg
-        return aString    
-    
+        return aString
+
     @staticmethod
     def phoneNumberFromString(aString):
         """

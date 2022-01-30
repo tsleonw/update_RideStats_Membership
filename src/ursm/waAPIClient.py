@@ -3,8 +3,10 @@ encapsulate the interactions with the Wild Apricot API.
 based on the sample file WaApi.py, but modified to eliminate non-used cruft
 (because as Kent Beck says "YAGNI") and to use the python requests package.
 
-written by Leon Webster
 version 1.0 12/20/2018
+
+@author Leon Webster
+©2022, RideStats, LLC
 
 """
 
