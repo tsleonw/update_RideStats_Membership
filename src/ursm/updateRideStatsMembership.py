@@ -22,10 +22,10 @@ import sys
 import time
 import traceback
 from datetime import datetime
-from dotenv import dotenv_values
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from logging.handlers import TimedRotatingFileHandler
+
+from dotenv import dotenv_values
 
 import URSMConfig
 from hbc_Member import HBCMember
@@ -138,7 +138,7 @@ def main():
     WA_API = WaAPIClient(CONFIG)
     waResponse = WA_API.getContacts()
     if CONFIG.logger.isEnabledFor(logging.DEBUG):
-        CONFIG.logger.debug(f'WildApricot Response = \n')
+        CONFIG.logger.debug('WildApricot Response = \n')
         CONFIG.logger.debug('================================')
         CONFIG.logger.debug(waResponse)
         CONFIG.logger.debug('================================\n\n')

@@ -14,9 +14,7 @@ Created on Sun Jan  6 18:53:51 2019
 ©2022 RideStats, LLC
 """
 CONFIG = {
-    'PROD': {'logLevel': 'INFO',
-             'logFile': 'logs/ursm.log',
-             'smtpServer': 'smtp.gmail.com',
+    'PROD': {'smtpServer': 'smtp.gmail.com',
              'smtpPort': 587,
              'filter': 'member eq true',
              'top': 0,
