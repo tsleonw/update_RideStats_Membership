@@ -12,6 +12,7 @@ version 1.0 12/20/2018
 
 import base64
 import logging
+
 import requests
 from dotenv import dotenv_values
 
@@ -81,7 +82,10 @@ class WaAPIClient:
                                 headers=headers)
         self._logger.info(f"response from Wild Apricot API was {response.status_code}")
         if self._logger.isEnabledFor(logging.DEBUG):
-            self._logger.debug(f'WA Payload = {response.text}')
+            self._logger.debug('================================')
+            self._logger.debug('WildApricot Response =')
+            self._logger.debug(response.json()["Contacts"])
+            self._logger.debug('================================\n\n')
         if response.status_code == 200:
             return response.json()["Contacts"]
         print("url = ", response.url)

@@ -10,6 +10,7 @@ Created on Sat Jan  5 11:37:44 2019
 
 
 import logging
+
 import requests
 from dotenv import dotenv_values
 
@@ -34,7 +35,9 @@ class RideStatsAPI:
         headers = {'authorization': self._rideStatsKey}
         if self._logger.isEnabledFor(logging.DEBUG):
             self._logger.debug('RideStats URL = %s', self._rideStatsURL)
-            self._logger.debug('RideStats payload = %s', payload)
+            # self._logger.debug('*******************************')
+            # self._logger.debug('RideStats payload = %s', payload)
+            # self._logger.debug('*******************************')
         response = requests.post(headers=headers,
                                  url=self._rideStatsURL,
                                  json=payload)
@@ -46,7 +49,7 @@ class RideStatsAPI:
             return response.text
         else:
             self._logger.critical(f'payload = {payload}')
-            self._logger.critical(f'url = {respones.url}')
+            self._logger.critical(f'url = {response.url}')
             msg = f'Call to RideStats API returned status code \
                 {response.status_code}'
             self._logger.critical(msg)

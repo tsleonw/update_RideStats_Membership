@@ -81,6 +81,25 @@ class Config:
         self.logger.info(msg=f'loaded parms for the {self.environment} environment')
 
 
+def construct_RideStats_payload(CONFIG, waResponse):
+    members = []
+    errors = []
+    CLUB_ID = dotenv_values()['RIDESTATS_CLUB_ID']
+    payload = {"clubId": CLUB_ID}
+    for each in waResponse:
+        member = HBCMember(each)
+        if member.memberErrors:
+            errors.append(member.memberErrors)
+            for errorMessage in member.memberErrors.messages:
+                CONFIG.logger.error(msg=errorMessage)
+        if member.isValid():
+            members.append(member.to_dict())
+        else:
+            CONFIG.logger.error(msg=f'invalid member record: {member} ')
+    payload["memberships"] = members
+    return payload, errors
+
+
 def emailResults(CONFIG, startTime, start, rideStatsResponse, members, errors):
     """
     send an email detailing the work
@@ -137,11 +156,6 @@ def main():
     # start getting Wild Apricot response
     WA_API = WaAPIClient(CONFIG)
     waResponse = WA_API.getContacts()
-    if CONFIG.logger.isEnabledFor(logging.DEBUG):
-        CONFIG.logger.debug('WildApricot Response = \n')
-        CONFIG.logger.debug('================================')
-        CONFIG.logger.debug(waResponse)
-        CONFIG.logger.debug('================================\n\n')
     # End getting Wild Apricot Response
     # Start Constructing RideStats POST
     payload, errors = construct_RideStats_payload(CONFIG, waResponse)
@@ -169,23 +183,6 @@ def main():
     emailResults(CONFIG, startTime, start,  rideStatsResponse, payload['memberships'], errors)
 
 
-def construct_RideStats_payload(CONFIG, waResponse):
-    members = []
-    errors = []
-    CLUB_ID = dotenv_values()['RIDESTATS_CLUB_ID']
-    payload = {"clubId": CLUB_ID}
-    for each in waResponse:
-        member = HBCMember(each)
-        if member.memberErrors:
-            errors.append(member.memberErrors)
-            for errorMessage in member.memberErrors.messages:
-                CONFIG.logger.error(msg=errorMessage)
-        if member.isValid():
-            members.append(member.to_dict())
-        else:
-            CONFIG.logger.error(msg=f'invalid member record: {member} ')
-    payload["memberships"] = members
-    return payload, errors
 
 
 if __name__ == "__main__":
