@@ -22,10 +22,9 @@ import sys
 import time
 import traceback
 from datetime import datetime
+from dotenv import dotenv_values
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
-from dotenv import dotenv_values
 
 import URSMConfig
 from hbc_Member import HBCMember
@@ -173,7 +172,6 @@ def main():
     # End post to RideStats or File
     # Log results
     if CONFIG.logger.isEnabledFor(logging.DEBUG):
-        CONFIG.logger.debug("valid members = %s", payload['memberships'])
         CONFIG.logger.debug("errorList = %s", errors)
     if CONFIG.logger.isEnabledFor(logging.INFO):
         CONFIG.logger.info(f'{str(len(payload["memberships"]))} members were successfully validated')

@@ -10,9 +10,9 @@ Created on Sat Jan  5 11:37:44 2019
 
 
 import logging
-
 import requests
 from dotenv import dotenv_values
+from http.client import HTTPConnection
 
 
 class RideStatsAPI:
@@ -34,10 +34,7 @@ class RideStatsAPI:
         """
         headers = {'authorization': self._rideStatsKey}
         if self._logger.isEnabledFor(logging.DEBUG):
-            self._logger.debug('RideStats URL = %s', self._rideStatsURL)
-            # self._logger.debug('*******************************')
-            # self._logger.debug('RideStats payload = %s', payload)
-            # self._logger.debug('*******************************')
+            HTTPConnection.debuglevel = 1
         response = requests.post(headers=headers,
                                  url=self._rideStatsURL,
                                  json=payload)
