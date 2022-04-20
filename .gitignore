@@ -14,3 +14,4 @@ deployTest/
 .env
 *.wpu
 *.wpr
+HBC_README.txt
