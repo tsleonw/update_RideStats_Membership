@@ -15,3 +15,5 @@ deployTest/
 *.wpu
 *.wpr
 HBC_README.txt
+.pytest_cache/
+

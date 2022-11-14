@@ -6,7 +6,7 @@ Created on Sun Jan  6 18:53:51 2019
 @author: tslcw
 
 used as a configuration file for the update rideStats program.  But contains no sensitive information.
-See .env.sample for an example .env file
+See sample.env for an example .env file
 
 Created on Sun Jan  6 18:53:51 2019
 

@@ -5,8 +5,10 @@ Run using Pytest module
 @author Leon Webster
 ©2022, RideStats LLC.
 """
-from src.ursm.hbc_Member import HBCMember
 from datetime import datetime, timedelta
+
+from src.ursm.hbc_Member import HBCMember
+
 
 def test_HBCMember_base_case():
     WA_response = {'FirstName': 'Leon', 'LastName': 'Webster', 'Email': 'leon@leonwebster.com',
@@ -63,6 +65,7 @@ def test_HBCMember_base_case():
                        'city': 'ST. Paul', 'state': 'MN', 'country': 'USA', 'zipcode': '55105-2043',
                        'bicycleType': 'SINGLE', 'ReceiveNewsLetter': True}
     test_member = HBCMember(WA_response)
+    # need to adjust renewal due to today + 30
     assert test_member.to_dict() == expected_output
     assert test_member.isValid()
     assert test_member.memberErrors is None
@@ -346,7 +349,7 @@ def test_default_membership_since_date():
     assert test_member.member_since == today
     assert test_member.memberErrors.messages[0] == 'Leon Webster has no creation date'
     assert test_member.memberErrors.messages[1] == 'Leon Webster has no Member since date'
-    assert test_member.memberErrors.messages[2] == 'Could not calculate member_since for Leon Webster. Using todays date.'
+    assert test_member.memberErrors.messages[2] == "Could not calculate member_since for Leon Webster. Using today's date."
 
 def test_calculate_renewal_due():
     WA_response = {'FirstName': 'Leon', 'LastName': 'Webster', 'Email': 'leon@leonwebster.com',
@@ -396,18 +399,19 @@ def test_calculate_renewal_due():
     today_plus_30 = datetime.date(datetime.today()) + timedelta(days=30)
     today_plus_30 = today_plus_30.isoformat()
     test_member = HBCMember(WA_response)
-    # will use 30 days from today since membersince date is over 30 days in the past
+    # will use 30 days from today since member since date is over 30 days in the past
     assert test_member.renewal_due == today_plus_30
-    assert test_member.memberErrors.messages[0] == 'Leon Webster doesnt not have a renewal due date'
+    assert test_member.memberErrors.messages[0] == "Leon Webster doesn't have a renewal due date"
     assert test_member.memberErrors.messages[1] == f'calculated renewal date for Leon Webster is {today_plus_30}'
 
     test_member.member_since = ''
     test_member.creation_date = ''
+    test_member.renewal_due = ''
     test_member.calculate_missing_dates()
     #will calculate 30 days from today.
-    assert test_member.member_since == datetime.date(datetime.today()).isoformat()
+    assert test_member.member_since == '2019-07-19'
     assert test_member.renewal_due == today_plus_30
-    assert test_member.memberErrors.messages[0] == 'Leon Webster doesnt not have a renewal due date'
+    assert test_member.memberErrors.messages[0] == "Leon Webster doesn't have a renewal due date"
     assert test_member.memberErrors.messages[1] == f'calculated renewal date for Leon Webster is {today_plus_30}'
 
 

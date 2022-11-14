@@ -9,7 +9,7 @@ Created on Sat Jan  5 11:37:44 2019
 
 © 2022, RideStats, LLC.
 """
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from member_Error import MemberError
 
@@ -67,7 +67,7 @@ class HBCMember:
                 if field['Value']:
                     self.renewal_due = field['Value'][:10]
                 else:
-                    msg = f'{self.first_name} {self.last_name} doesnt not have a renewal due date'
+                    msg = f"{self.first_name} {self.last_name} doesn't have a renewal due date"
                     self.postError(msg)
             elif field['FieldName'] == 'Mobile Phone':
                 if field['Value']:
@@ -121,6 +121,8 @@ class HBCMember:
                     for group in field["Value"]:
                         if group["Label"] == "Ride Leader":
                             self.is_RideLeader = True
+                            break
+
             elif field["FieldName"] == "Creation Date":
                 self._creationDate = (field["Value"][:10])
 
@@ -128,20 +130,21 @@ class HBCMember:
         self.calculate_missing_dates()
 
     def calculate_missing_dates(self):
-        if self.member_since is None:
-            if self.creation_date:
+        if not self.member_since:
+            if self.creation_date and self.creation_date > '':
                 self.member_since = self.creation_date
+                msg = f'member_since date missing; using creation_date'
+                self.postError(msg)
+            elif self.profile_last_updated and self.profile_last_updated > '':
+                self.member_since = self.profile_last_updated
+                msg = f'member_since date missing; using profile_last_updated'
+                self.postError(msg)
             else:
-                if self.profile_last_updated:
-                    self.member_since = self.profile_last_updated
-                else:
-                    self.member_since = date.today().isoformat()
-                    msg = f'Could not calculate member_since for {self.first_name} {self.last_name}. Using today\'s date.'
-                    self.postError(msg)
-        if self.renewal_due is None:
-            self.renewal_due = date.fromisoformat(self.member_since) + timedelta(days=30)
-            if self.renewal_due < datetime.date(datetime.today()):
-                self.renewal_due = datetime.date(datetime.today()) + timedelta(days=30)
+                self.member_since = date.today().isoformat()
+                msg = f'Could not calculate member_since for {self.first_name} {self.last_name}. Using today\'s date.'
+                self.postError(msg)
+        if  not self.renewal_due:
+            self.renewal_due = date.today() + timedelta(days=30)
             self.renewal_due = self.renewal_due.isoformat()
             msg = f'calculated renewal date for {self.first_name} {self.last_name} is {self.renewal_due}'
             self.postError(msg)

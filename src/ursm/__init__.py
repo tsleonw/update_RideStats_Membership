@@ -12,4 +12,5 @@ __version__ = '1.0.0'
 
 import pathlib
 import sys
+# This line is neccessary for test code to find files
 sys.path.append(str(pathlib.Path(__file__).parent))

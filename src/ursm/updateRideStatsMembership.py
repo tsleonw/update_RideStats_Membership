@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 This module sends a request to Wild Apricot for a list of club members using
-the Wild Apricot API.  Wild Apricot returns a JSON list of members.  The module
-then validates each member.  A list of valid members is sent to RideStats,
-and an email is produced which reports the status of the run and lists any
-errors.
+the Wild Apricot API.  Wild Apricot returns a list of members in JSON format
+The module then validates each member.  A list of valid members is sent to
+RideStats, and an email is produced which reports the status of the run and
+lists any errors.
 
 Created on Sat Jan  5 11:37:44 2019
 
@@ -22,9 +22,10 @@ import sys
 import time
 import traceback
 from datetime import datetime
-from dotenv import dotenv_values
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+from dotenv import dotenv_values
 
 import URSMConfig
 from hbc_Member import HBCMember
@@ -83,8 +84,9 @@ class Config:
 def construct_RideStats_payload(CONFIG, waResponse):
     members = []
     errors = []
-    CLUB_ID = dotenv_values()['RIDESTATS_CLUB_ID']
-    payload = {"clubId": CLUB_ID}
+    #CLUB_ID = dotenv_values()['RIDESTATS_CLUB_ID']
+    #payload = {"clubId": CLUB_ID}
+    payload = {"clubId":dotenv_values()['RIDESTATS_CLUB_ID']}
     for each in waResponse:
         member = HBCMember(each)
         if member.memberErrors:
@@ -95,6 +97,7 @@ def construct_RideStats_payload(CONFIG, waResponse):
             members.append(member.to_dict())
         else:
             CONFIG.logger.error(msg=f'invalid member record: {member} ')
+            errors.append('invalid member record:{member} ')
     payload["memberships"] = members
     return payload, errors
 
@@ -129,7 +132,10 @@ def emailResults(CONFIG, startTime, start, rideStatsResponse, members, errors):
     msg = MIMEMultipart()
     msg['From'] = from_address
     msg['To'] = to_address
-    msg['Subject'] = 'Update RideStats Job Results'
+    if errors:
+        msg['Subject = "update RideStats Job Results -- ERRORS FOUND!']
+    else:
+        msg['Subject'] = 'Update RideStats Job Results'
     msg.attach(MIMEText(msgText, 'plain'))
 
     try:
