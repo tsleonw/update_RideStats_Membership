@@ -149,6 +149,17 @@ class HBCMember:
             msg = f'calculated renewal date for {self.first_name} {self.last_name} is {self.renewal_due}'
             self.postError(msg)
 
+        # We need to make sure the renewal due date is not less than the member since date.
+        # this could happen if a member was missing the "member since" date, but had a renewal due
+        # in Wild Apricot.
+
+        member_since_date = date.fromisoformat(self.member_since)
+        renewal_due_date = date.fromisoformat(self.renewal_due)
+        if member_since_date >= renewal_due_date:
+            self.renewal_due = date.today() + timedelta(days=30)
+            self.renewal_due = self.renewal_due.isoformat()
+            msg = f'Renewal Date was less than member since date.  Modified renewal date to {self.renewal_due}'
+            self.postError(msg)
     def postError(self, msg, exception=None):
         """
         add an error to the member's error list.  If there is no error list,

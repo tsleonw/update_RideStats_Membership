@@ -84,8 +84,6 @@ class Config:
 def construct_RideStats_payload(CONFIG, waResponse):
     members = []
     errors = []
-    #CLUB_ID = dotenv_values()['RIDESTATS_CLUB_ID']
-    #payload = {"clubId": CLUB_ID}
     payload = {"clubId":dotenv_values()['RIDESTATS_CLUB_ID']}
     for each in waResponse:
         member = HBCMember(each)
@@ -97,7 +95,7 @@ def construct_RideStats_payload(CONFIG, waResponse):
             members.append(member.to_dict())
         else:
             CONFIG.logger.error(msg=f'invalid member record: {member} ')
-            errors.append('invalid member record:{member} ')
+            errors.append(f'invalid member record:{member} ')
     payload["memberships"] = members
     return payload, errors
 
@@ -185,8 +183,6 @@ def main():
         CONFIG.logger.info('%s non-fatal errors were found', str(len(errors)))
     # Email Results
     emailResults(CONFIG, startTime, start,  rideStatsResponse, payload['memberships'], errors)
-
-
 
 
 if __name__ == "__main__":

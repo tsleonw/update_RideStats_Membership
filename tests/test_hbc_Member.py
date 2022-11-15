@@ -351,9 +351,10 @@ def test_default_membership_since_date():
     assert test_member.memberErrors.messages[1] == 'Leon Webster has no Member since date'
     assert test_member.memberErrors.messages[2] == "Could not calculate member_since for Leon Webster. Using today's date."
 
-def test_calculate_renewal_due():
+
+def test_renewal_date_greater_than_member_since_date():
     WA_response = {'FirstName': 'Leon', 'LastName': 'Webster', 'Email': 'leon@leonwebster.com',
-                   'DisplayName': 'Webster, Leon', 'ProfileLastUpdated': '2019-07-19T00:09:19-05:00',
+                   'DisplayName': 'Webster, Leon', 'ProfileLastUpdated': '',
                    'MembershipLevel': {'Id': 230757,
                                        'Url': 'https://api.wildapricot.org/v2.1/accounts/53245/MembershipLevels/230757',
                                        'Name': 'Household'},
@@ -361,9 +362,9 @@ def test_calculate_renewal_due():
                    'FieldValues': [
                        {'FieldName': 'Member emails and newsletters', 'Value': True,
                         'SystemCode': 'ReceiveNewsletters'},
-                       {'FieldName': 'Profile last updated', 'Value': '2019-07-19T00:09:19-05:00',
+                       {'FieldName': 'Profile last updated', 'Value': '',
                         'SystemCode': 'LastUpdated'},
-                       {'FieldName': 'Creation date', 'Value': '2011-12-15T17:18:41-06:00',
+                       {'FieldName': 'Creation date', 'Value': '',
                         'SystemCode': 'CreationDate'},
                        {'FieldName': 'Terms of use accepted', 'Value': True,
                         'SystemCode': 'SystemRulesAndTermsAccepted'},
@@ -376,8 +377,8 @@ def test_calculate_renewal_due():
                        {'FieldName': 'Emergency Contact', 'Value': 'Lindy Webster', 'SystemCode': 'custom-2496544'},
                        {'FieldName': 'Emergency Contact Phone', 'Value': '651-675-7565',
                         'SystemCode': 'custom-2496545'},
-                       {'FieldName': 'Member since', 'Value': '2009-06-17T00:00:00-05:00', 'SystemCode': 'MemberSince'},
-                       {'FieldName': 'Renewal due', 'Value': '', 'SystemCode': 'RenewalDue'},
+                       {'FieldName': 'Member since', 'Value': '', 'SystemCode': 'MemberSince'},
+                       {'FieldName': 'Renewal due', 'Value': '2019-07-29', 'SystemCode': 'RenewalDue'},
                        {'FieldName': 'Membership status',
                         'Value': {'Id': 1, 'Label': 'Active', 'Value': 'Active', 'SelectedByDefault': False,
                                   'Position': 0}, 'SystemCode': 'Status'},
@@ -400,20 +401,16 @@ def test_calculate_renewal_due():
     today_plus_30 = today_plus_30.isoformat()
     test_member = HBCMember(WA_response)
     # will use 30 days from today since member since date is over 30 days in the past
-    assert test_member.renewal_due == today_plus_30
-    assert test_member.memberErrors.messages[0] == "Leon Webster doesn't have a renewal due date"
-    assert test_member.memberErrors.messages[1] == f'calculated renewal date for Leon Webster is {today_plus_30}'
 
-    test_member.member_since = ''
-    test_member.creation_date = ''
-    test_member.renewal_due = ''
-    test_member.calculate_missing_dates()
-    #will calculate 30 days from today.
-    assert test_member.member_since == '2019-07-19'
-    assert test_member.renewal_due == today_plus_30
-    assert test_member.memberErrors.messages[0] == "Leon Webster doesn't have a renewal due date"
-    assert test_member.memberErrors.messages[1] == f'calculated renewal date for Leon Webster is {today_plus_30}'
-
+    today = datetime.date(datetime.today()).isoformat()
+    assert test_member.member_since == today
+    assert test_member.memberErrors.messages[0] == 'Leon Webster has no creation date'
+    assert test_member.memberErrors.messages[1] == 'Leon Webster has no Member since date'
+    assert test_member.memberErrors.messages[2] == "Could not calculate member_since for Leon Webster. Using today's date."
+    member_since_date = datetime.fromisoformat(test_member.member_since)
+    member_renewal_date = datetime.fromisoformat(test_member.renewal_due)
+    assert member_renewal_date > member_since_date
+    assert test_member.memberErrors.messages[3] == f'Renewal Date was less than member since date.  Modified renewal date to {test_member.renewal_due}'
 
 
 def test_phone_number_from_string():
