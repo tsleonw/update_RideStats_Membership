@@ -61,7 +61,7 @@ class Config:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             'env',
-            help='specify the environment for updating RideStats. Either "QA" or "PROD"',
+            help='specify the environment: "QA" | "PROD"',
             choices=["PROD", "QA"],
         )
         self.environment = parser.parse_args().env
@@ -78,13 +78,14 @@ class Config:
         except Exception as ex:
             print("could not initialize logging:  ", ex)
             sys.exit(1)
-        self.logger.info(msg=f'loaded parms for the {self.environment} environment')
+        self.logger.info(
+            msg=f'loaded parms for the {self.environment} environment')
 
 
 def construct_RideStats_payload(CONFIG, waResponse):
     members = []
     errors = []
-    payload = {"clubId":dotenv_values()['RIDESTATS_CLUB_ID']}
+    payload = {"clubId": dotenv_values()['RIDESTATS_CLUB_ID']}
     for each in waResponse:
         member = HBCMember(each)
         if member.memberErrors:
@@ -178,11 +179,17 @@ def main():
     if CONFIG.logger.isEnabledFor(logging.DEBUG):
         CONFIG.logger.debug("errorList = %s", errors)
     if CONFIG.logger.isEnabledFor(logging.INFO):
-        CONFIG.logger.info(f'{str(len(payload["memberships"]))} members were successfully validated')
+        CONFIG.logger.info(
+            f'{str(len(payload["memberships"]))} members were successfully validated')
         CONFIG.logger.info(f'response from RideStats was {rideStatsResponse}')
         CONFIG.logger.info('%s non-fatal errors were found', str(len(errors)))
     # Email Results
-    emailResults(CONFIG, startTime, start,  rideStatsResponse, payload['memberships'], errors)
+    emailResults(CONFIG,
+                 startTime,
+                 start,
+                 rideStatsResponse,
+                 payload['memberships'],
+                 errors)
 
 
 if __name__ == "__main__":
