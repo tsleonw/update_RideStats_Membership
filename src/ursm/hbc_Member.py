@@ -95,6 +95,8 @@ class HBCMember:
                     self.state = 'AZ'
                 elif state_string in {'tx', 'texas'}:
                     self.state = 'TX'
+                elif state_string in {'fl', 'fla', 'florida'}:
+                    self.state = 'FL'
                 else:
                     self.state = 'MN'
                     msg = f'{self.first_name} {self.last_name} does not have a valid state.'
@@ -160,6 +162,7 @@ class HBCMember:
             self.renewal_due = self.renewal_due.isoformat()
             msg = f'Renewal Date was less than member since date.  Modified renewal date to {self.renewal_due}'
             self.postError(msg)
+
     def postError(self, msg, exception=None):
         """
         add an error to the member's error list.  If there is no error list,

@@ -2,7 +2,10 @@ class MemberError:
     """
     container for errorList and warnings about a given member.
     This will be added to the errorList array and needs to print in a nice
-    fashion.  Maybe can be converted to a dataclass at somepoint.
+    fashion.  Maybe can be converted to a dataclass at some point.
+
+    Note:  change this to make it a list of RideStats errors and rename it
+    MemberErrors
 
     Created on Sat Jan  5 11:37:44 2019
 
@@ -22,8 +25,6 @@ class MemberError:
         self.messages = [msg]
         if exception:
             self.exceptions = [exception]
-
-
 
     def addErrorRecord(self, msg, exception=None):
         """

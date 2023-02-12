@@ -16,4 +16,5 @@ deployTest/
 *.wpr
 HBC_README.txt
 .pytest_cache/
+.python-version
 

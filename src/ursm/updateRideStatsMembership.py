@@ -132,7 +132,7 @@ def emailResults(CONFIG, startTime, start, rideStatsResponse, members, errors):
     msg['From'] = from_address
     msg['To'] = to_address
     if errors:
-        msg['Subject = "update RideStats Job Results -- ERRORS FOUND!']
+        msg['Subject'] = 'update RideStats Job Results -- ERRORS FOUND!'
     else:
         msg['Subject'] = 'Update RideStats Job Results'
     msg.attach(MIMEText(msgText, 'plain'))
