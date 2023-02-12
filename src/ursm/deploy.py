@@ -25,7 +25,7 @@ import sys
 from shutil import copy
 from zipfile import ZipFile
 
-prodDir = "/Users/tslcw/UpdateRideStats"
+prodDir = "/Users/leon/Dropbox/Projects/UpdateRideStatsMembership/deploy"
 testDir = "/Users/tslcw/Dropbox/Projects/UpdateRideStatsMembership/deployTest"
 manifest = ["src/ursm/__init__.py",
             "src/ursm/deploy.py",

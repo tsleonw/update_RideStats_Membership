@@ -6,6 +6,7 @@ tests/*.txt
 tests/inputData.py
 *.pyc
 *.zip
+deploy/
 deployTest/
 .venv/
 .spyproject/
